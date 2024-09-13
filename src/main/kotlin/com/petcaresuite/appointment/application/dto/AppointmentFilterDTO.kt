@@ -6,12 +6,14 @@ import java.time.LocalDateTime
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class AppointmentFilterDTO(
-    val id: Long,
-    val patientId: Long,
-    val vetName: String,
-    val vetId: Long,
+    val id: Long?,
+    val patientId: Long?,
+    val vetName: String?,
+    val vetId: Long?,
+    val status: String?,
+    var companyId: Long?,
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
-    val appointmentDate: LocalDateTime,
-    val status: String,
-    var companyId: Long
+    val initialDate: LocalDateTime?,
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
+    val finalDate: LocalDateTime?,
 )

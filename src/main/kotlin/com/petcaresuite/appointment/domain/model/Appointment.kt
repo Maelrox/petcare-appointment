@@ -10,4 +10,5 @@ data class Appointment(
     val reason: String?,
     var companyId: Long?,
     val status: String?
+
 )

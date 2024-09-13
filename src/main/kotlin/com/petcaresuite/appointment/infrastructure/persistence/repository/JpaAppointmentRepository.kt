@@ -12,7 +12,7 @@ interface JpaAppointmentRepository : JpaRepository<AppointmentEntity, Long> {
     @Query(
         """
             SELECT a FROM AppointmentEntity a 
-            WHERE a.companyId = :companyId
+            WHERE a.companyId = :#{#filter.companyId}
             AND (:#{#filter.patientId} IS NULL OR a.patientId = :#{#filter.patientId})
             AND (:#{#filter.vetId} IS NULL OR a.vetId = :#{#filter.vetId})
             AND (:#{#filter.status} IS NULL OR a.status = :#{#filter.status})
