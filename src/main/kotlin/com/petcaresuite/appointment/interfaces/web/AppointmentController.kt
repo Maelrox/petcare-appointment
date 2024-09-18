@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/appointments")
+@RequestMapping()
 class AppointmentController(private val appointmentUseCase: AppointmentUseCase) {
 
     @PostMapping()
@@ -21,9 +21,23 @@ class AppointmentController(private val appointmentUseCase: AppointmentUseCase) 
         return ResponseEntity.ok(appointmentUseCase.save(dto))
     }
 
+    @PutMapping()
+    @Permissions(Modules.APPOINTMENTS, ModuleActions.CREATE)
+    fun updateAppointment(@Valid @RequestBody dto: AppointmentDTO, request: HttpServletRequest): ResponseEntity<ResponseDTO> {
+        dto.companyId  = request.getAttribute("companyId").toString().toLong()
+        return ResponseEntity.ok(appointmentUseCase.update(dto))
+    }
+
+    @GetMapping("/{appointmentId}")
+    @Permissions(Modules.APPOINTMENTS, ModuleActions.VIEW)
+    fun searchAppointments(@PathVariable appointmentId: Long, request: HttpServletRequest): ResponseEntity<AppointmentDTO> {
+        val companyId  = request.getAttribute("companyId").toString().toLong()
+        return ResponseEntity.ok(appointmentUseCase.getByAppointmentId(appointmentId, companyId))
+    }
+
     @PostMapping("/search")
     @Permissions(Modules.APPOINTMENTS, ModuleActions.VIEW)
-    fun getAppointments(@RequestBody filterDTO: AppointmentFilterDTO, request: HttpServletRequest): ResponseEntity<List<AppointmentDTO>> {
+    fun searchAppointments(@RequestBody filterDTO: AppointmentFilterDTO, request: HttpServletRequest): ResponseEntity<List<AppointmentDTO>> {
         val companyId  = request.getAttribute("companyId").toString().toLong()
         return ResponseEntity.ok(appointmentUseCase.getAllByFilter(filterDTO, companyId))
     }

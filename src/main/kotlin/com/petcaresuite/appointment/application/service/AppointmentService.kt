@@ -20,11 +20,23 @@ class AppointmentService(
         return ResponseDTO(message = Responses.APPOINTMENT_SCHEDULED)
     }
 
+    override fun update(appointmentDTO: AppointmentDTO): ResponseDTO {
+        //validateAppointment(appointmentDTO)
+        val appointment = appointmentMapper.toDomain(appointmentDTO)
+        appointmentPersistencePort.update(appointment)
+        return ResponseDTO(message = Responses.APPOINTMENT_UPDATED)
+    }
+
     override fun getAllByFilter(filterDTO : AppointmentFilterDTO, companyId: Long): List<AppointmentDTO> {
         val filter = appointmentMapper.toDomain(filterDTO)
         filter.companyId = companyId
         val appointments = appointmentPersistencePort.findAllByFilter(filter)
         return appointmentMapper.toDTO(appointments)
+    }
+
+    override fun getByAppointmentId(appointmentId: Long, companyId: Long): AppointmentDTO {
+        val appointment = appointmentPersistencePort.findByAppointmentId(appointmentId, companyId)
+        return appointmentMapper.toDTO(appointment)
     }
 
 }

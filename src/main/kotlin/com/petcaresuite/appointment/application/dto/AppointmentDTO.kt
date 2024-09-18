@@ -6,13 +6,14 @@ import java.time.LocalDateTime
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class AppointmentDTO(
-    val id: Long?,
+    val appointmentId: Long?,
     val patientId: Long,
     val vetName: String?,
     val vetId: Long?,
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
     val appointmentDate: LocalDateTime,
     val reason: String?,
     val status: String?,
-    var companyId: Long?
+    var companyId: Long?,
+    val ownerId: Long?,
 )

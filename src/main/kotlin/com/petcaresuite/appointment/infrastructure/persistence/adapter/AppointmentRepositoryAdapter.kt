@@ -18,9 +18,23 @@ class AppointmentRepositoryAdapter(
         return appointmentMapper.toDomain(appointmentEntity)
     }
 
+    override fun update(appointment: Appointment): Appointment? {
+        val appointmentEntity = appointmentMapper.toEntity(appointment)
+        jpaAppointmentRepository.save(appointmentEntity)
+        return appointmentMapper.toDomain(appointmentEntity)
+    }
+
     override fun findAllByFilter(filter: Appointment): List<Appointment> {
         val appointments = jpaAppointmentRepository.findAllByFilter(filter)
         return appointmentMapper.toDomain(appointments)
+    }
+
+    override fun findByAppointmentId(appointmentId: Long, companyId: Long): Appointment {
+        val appointmentEntity = jpaAppointmentRepository.findByAppointmentIdAndCompanyId(appointmentId, companyId)
+        val appointment = appointmentMapper.toDomain(appointmentEntity)
+        val ownerId = jpaAppointmentRepository.getPatientOwner(appointment.patientId!!)
+        appointment.ownerId = ownerId
+        return appointment
     }
 
 }

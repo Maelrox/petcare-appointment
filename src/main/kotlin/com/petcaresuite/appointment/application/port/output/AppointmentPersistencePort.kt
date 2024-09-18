@@ -6,6 +6,10 @@ interface AppointmentPersistencePort {
 
      fun save(appointment: Appointment): Appointment?
 
+     fun update(appointment: Appointment): Appointment?
+
      fun findAllByFilter(filter: Appointment): List<Appointment>
+
+     fun findByAppointmentId(appointmentId: Long, companyId: Long): Appointment
 
 }
