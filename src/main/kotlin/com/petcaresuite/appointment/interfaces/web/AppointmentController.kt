@@ -30,7 +30,7 @@ class AppointmentController(private val appointmentUseCase: AppointmentUseCase) 
 
     @GetMapping("/{appointmentId}")
     @Permissions(Modules.APPOINTMENTS, ModuleActions.VIEW)
-    fun searchAppointments(@PathVariable appointmentId: Long, request: HttpServletRequest): ResponseEntity<AppointmentDTO> {
+    fun getAppointment(@PathVariable appointmentId: Long, request: HttpServletRequest): ResponseEntity<AppointmentDTO> {
         val companyId  = request.getAttribute("companyId").toString().toLong()
         return ResponseEntity.ok(appointmentUseCase.getByAppointmentId(appointmentId, companyId))
     }
