@@ -25,8 +25,8 @@ class AppointmentRepositoryAdapter(
     }
 
     override fun findAllByFilter(filter: Appointment): List<Appointment> {
-        val appointments = jpaAppointmentRepository.findAllByFilter(filter)
-        return appointmentMapper.toDomain(appointments)
+        val appointments = jpaAppointmentRepository.findAllByFilterWithSpecieName(filter)
+        return appointmentMapper.dtoToDomain(appointments)
     }
 
     override fun findByAppointmentId(appointmentId: Long, companyId: Long): Appointment {

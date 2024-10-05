@@ -16,4 +16,5 @@ data class AppointmentDTO(
     val status: String?,
     var companyId: Long?,
     val ownerId: Long?,
+    val specieName: String?,
 )

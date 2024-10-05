@@ -2,6 +2,7 @@ package com.petcaresuite.appointment.infrastructure.persistence.entity
 
 import jakarta.persistence.*
 import java.time.LocalDateTime
+import kotlin.jvm.Transient
 
 @Entity
 @Table(name = "appointments")
@@ -27,5 +28,6 @@ data class AppointmentEntity(
     val reason: String? = null,
 
     @Column(name = "status", length = 50)
-    val status: String? = null
+    val status: String? = null,
+
 )
