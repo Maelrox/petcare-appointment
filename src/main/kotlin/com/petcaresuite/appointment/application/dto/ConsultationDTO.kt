@@ -15,7 +15,7 @@ data class ConsultationDTO(
     val notes: String? = null,
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
     val followUpDate: LocalDateTime? = null,
-    val status: String,
+    val status: String?,
     var createdAt: LocalDateTime?,
     var updatedAt: LocalDateTime?,
     var companyId: Long?,

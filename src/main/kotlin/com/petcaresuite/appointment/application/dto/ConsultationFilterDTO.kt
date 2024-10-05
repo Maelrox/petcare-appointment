@@ -7,13 +7,13 @@ data class ConsultationFilterDTO(
     val patientId: Long? = null,
     val vetId: Long? = null,
     val appointmentId: Long? = null,
-    val consultationDate: LocalDateTime? = null,
+    val consultationDate: LocalDateTime?,
     val reason: String? = null,
     val diagnosis: String? = null,
     val treatment: String? = null,
     val notes: String? = null,
     val followUpDate: LocalDateTime? = null,
-    val status: String? = null,
+    val status: String?,
     val createdAt: LocalDateTime?,
     val updatedAt: LocalDateTime?
 )

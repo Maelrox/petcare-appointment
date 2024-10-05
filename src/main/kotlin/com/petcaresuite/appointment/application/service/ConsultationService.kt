@@ -1,13 +1,12 @@
 package com.petcaresuite.appointment.application.service
 
 import com.petcaresuite.appointment.application.dto.*
-import com.petcaresuite.appointment.application.mapper.AppointmentMapper
 import com.petcaresuite.appointment.application.mapper.ConsultationMapper
-import com.petcaresuite.appointment.application.port.input.AppointmentUseCase
 import com.petcaresuite.appointment.application.port.input.ConsultationUseCase
-import com.petcaresuite.appointment.application.port.output.AppointmentPersistencePort
 import com.petcaresuite.appointment.application.port.output.ConsultationPersistencePort
 import com.petcaresuite.appointment.application.service.messages.Responses
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
@@ -33,11 +32,10 @@ class ConsultationService(
         return ResponseDTO(message = Responses.CONSULTATION_UPDATED)
     }
 
-    override fun getAllByFilter(filterDTO : ConsultationFilterDTO, companyId: Long): List<ConsultationDTO> {
+    override fun getAllByFilterPaginated(filterDTO : ConsultationFilterDTO, pageable: Pageable, companyId: Long): Page<ConsultationDTO> {
         val filter = consultationMapper.toDomain(filterDTO)
         filter.companyId = companyId
-        val consultations = consultationPersistencePort.findAllByFilter(filter)
-        return consultationMapper.toDTO(consultations)
+        return consultationPersistencePort.findAllByFilterPageable(filter, pageable).map { consultationMapper.toDTO(it) }
     }
 
     override fun getByAppointmentId(consultationId: Long, companyId: Long): ConsultationDTO {

@@ -4,6 +4,8 @@ import com.petcaresuite.appointment.application.port.output.ConsultationPersiste
 import com.petcaresuite.appointment.domain.model.Consultation
 import com.petcaresuite.appointment.infrastructure.persistence.mapper.ConsultationEntityMapper
 import com.petcaresuite.appointment.infrastructure.persistence.repository.JpaConsultationRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Component
 
 @Component
@@ -24,9 +26,10 @@ class ConsultationRepositoryAdapter(
         return consultationMapper.toDomain(appointmentEntity)
     }
 
-    override fun findAllByFilter(filter: Consultation): List<Consultation> {
-        val consultations = jpaConsultationRepository.findAllByFilter(filter)
-        return consultationMapper.dtoToDomain(consultations)
+    override fun findAllByFilterPageable(filter: Consultation, pageable: Pageable): Page<Consultation> {
+        val pagedConsultationsEntity = jpaConsultationRepository.findAllByFilter(filter, pageable)
+        return pagedConsultationsEntity.map { consultationMapper.toDomain(it) }
+
     }
 
     override fun findByConsultationId(consultationId: Long, companyId: Long): Consultation {
