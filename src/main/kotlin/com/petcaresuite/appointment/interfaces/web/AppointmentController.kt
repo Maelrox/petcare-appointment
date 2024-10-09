@@ -22,7 +22,7 @@ class AppointmentController(private val appointmentUseCase: AppointmentUseCase) 
     }
 
     @PutMapping()
-    @Permissions(Modules.APPOINTMENTS, ModuleActions.CREATE)
+    @Permissions(Modules.APPOINTMENTS, ModuleActions.UPDATE)
     fun updateAppointment(@Valid @RequestBody dto: AppointmentDTO, request: HttpServletRequest): ResponseEntity<ResponseDTO> {
         dto.companyId  = request.getAttribute("companyId").toString().toLong()
         return ResponseEntity.ok(appointmentUseCase.update(dto))
@@ -40,6 +40,13 @@ class AppointmentController(private val appointmentUseCase: AppointmentUseCase) 
     fun searchAppointments(@RequestBody filterDTO: AppointmentFilterDTO, request: HttpServletRequest): ResponseEntity<List<AppointmentDTO>> {
         val companyId  = request.getAttribute("companyId").toString().toLong()
         return ResponseEntity.ok(appointmentUseCase.getAllByFilter(filterDTO, companyId))
+    }
+
+    @GetMapping("/{patientId}")
+    @Permissions(Modules.APPOINTMENTS, ModuleActions.VIEW)
+    fun getAppointmentByPatient(@PathVariable patientId: Long, request: HttpServletRequest): ResponseEntity<AppointmentDTO> {
+        val companyId  = request.getAttribute("companyId").toString().toLong()
+        return ResponseEntity.ok(appointmentUseCase.getByPatientId(patientId, companyId))
     }
 
 }
