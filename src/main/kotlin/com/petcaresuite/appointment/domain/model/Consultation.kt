@@ -16,5 +16,9 @@ data class Consultation(
     val followUpDate: LocalDateTime? = null,
     val status: String? = null,
     val createdAt: LocalDateTime? = null,
-    val updatedAt: LocalDateTime? = null
-)
+    val updatedAt: LocalDateTime? = null,
+    var ownerId: Long?
+
+) {
+
+}

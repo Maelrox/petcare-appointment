@@ -33,7 +33,7 @@ class ConsultationController(private val consultationUseCase: ConsultationUseCas
     @Permissions(Modules.CONSULTATIONS, ModuleActions.VIEW)
     fun getConsultation(@PathVariable consultationId: Long, request: HttpServletRequest): ResponseEntity<ConsultationDTO> {
         val companyId  = request.getAttribute("companyId").toString().toLong()
-        return ResponseEntity.ok(consultationUseCase.getByAppointmentId(consultationId, companyId))
+        return ResponseEntity.ok(consultationUseCase.getByConsultationId(consultationId, companyId))
     }
 
     @PostMapping("/search")

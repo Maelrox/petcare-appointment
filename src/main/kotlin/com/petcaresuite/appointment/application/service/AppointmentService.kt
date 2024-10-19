@@ -39,9 +39,9 @@ class AppointmentService(
         return appointmentMapper.toDTO(appointment)
     }
 
-    override fun getByPatientId(patientId: Long, companyId: Long): AppointmentDTO {
-        val appointment = appointmentPersistencePort.findByPatientId(patientId, companyId)
-        return appointmentMapper.toDTO(appointment)
+    override fun getByPatientId(patientId: Long, companyId: Long): List<AppointmentDTO> {
+        val appointments = appointmentPersistencePort.findByPatientId(patientId, companyId)
+        return appointmentMapper.toDTO(appointments)
     }
 
 }

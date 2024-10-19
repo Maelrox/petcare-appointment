@@ -8,6 +8,7 @@ data class ConsultationDTO(
     val patientId: Long,
     val vetId: Long,
     val appointmentId: Long,
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
     val consultationDate: LocalDateTime?,
     val reason: String? = null,
     val diagnosis: String? = null,
@@ -19,4 +20,5 @@ data class ConsultationDTO(
     var createdAt: LocalDateTime?,
     var updatedAt: LocalDateTime?,
     var companyId: Long?,
+    val ownerId: Long?,
 )

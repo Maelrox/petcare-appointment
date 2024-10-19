@@ -42,9 +42,9 @@ class AppointmentController(private val appointmentUseCase: AppointmentUseCase) 
         return ResponseEntity.ok(appointmentUseCase.getAllByFilter(filterDTO, companyId))
     }
 
-    @GetMapping("/{patientId}")
+    @GetMapping("/patient/{patientId}")
     @Permissions(Modules.APPOINTMENTS, ModuleActions.VIEW)
-    fun getAppointmentByPatient(@PathVariable patientId: Long, request: HttpServletRequest): ResponseEntity<AppointmentDTO> {
+    fun getAppointmentByPatient(@PathVariable patientId: Long, request: HttpServletRequest): ResponseEntity<List<AppointmentDTO>> {
         val companyId  = request.getAttribute("companyId").toString().toLong()
         return ResponseEntity.ok(appointmentUseCase.getByPatientId(patientId, companyId))
     }

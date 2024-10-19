@@ -12,6 +12,6 @@ interface AppointmentUseCase {
 
     fun getByAppointmentId(appointmentId: Long, companyId: Long): AppointmentDTO
 
-    fun getByPatientId(patientId: Long, companyId: Long): AppointmentDTO
+    fun getByPatientId(patientId: Long, companyId: Long): List<AppointmentDTO>
 
 }

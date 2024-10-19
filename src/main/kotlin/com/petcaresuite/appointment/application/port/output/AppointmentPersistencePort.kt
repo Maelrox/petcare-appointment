@@ -12,6 +12,6 @@ interface AppointmentPersistencePort {
 
      fun findByAppointmentId(appointmentId: Long, companyId: Long): Appointment
 
-     fun findByPatientId(patientId: Long, companyId: Long): Appointment
+     fun findByPatientId(patientId: Long, companyId: Long): List<Appointment>
 
 }

@@ -38,7 +38,7 @@ class ConsultationService(
         return consultationPersistencePort.findAllByFilterPageable(filter, pageable).map { consultationMapper.toDTO(it) }
     }
 
-    override fun getByAppointmentId(consultationId: Long, companyId: Long): ConsultationDTO {
+    override fun getByConsultationId(consultationId: Long, companyId: Long): ConsultationDTO {
         val consultation = consultationPersistencePort.findByConsultationId(consultationId, companyId)
         return consultationMapper.toDTO(consultation)
     }

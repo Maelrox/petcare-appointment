@@ -12,6 +12,6 @@ interface ConsultationUseCase {
 
     fun getAllByFilterPaginated(filterDTO : ConsultationFilterDTO, pageable: Pageable, companyId: Long): Page<ConsultationDTO>
 
-    fun getByAppointmentId(consultationId: Long, companyId: Long): ConsultationDTO
+    fun getByConsultationId(consultationId: Long, companyId: Long): ConsultationDTO
 
 }

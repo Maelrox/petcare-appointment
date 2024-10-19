@@ -50,6 +50,6 @@ interface JpaAppointmentRepository : JpaRepository<AppointmentEntity, Long> {
     )
     fun getPatientOwner(@Param("patientId") patientId: Long): Long?
 
-    fun findByPatientIdAndCompanyId(patientId: Long, companyId: Long): AppointmentEntity
+    fun findAllByPatientIdAndCompanyId(patientId: Long, companyId: Long): List<AppointmentEntity>
 
 }

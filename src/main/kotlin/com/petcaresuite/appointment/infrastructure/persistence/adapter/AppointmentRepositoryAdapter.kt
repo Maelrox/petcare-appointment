@@ -37,8 +37,8 @@ class AppointmentRepositoryAdapter(
         return appointment
     }
 
-    override fun findByPatientId(patientId: Long, companyId: Long): Appointment {
-        val appointmentEntity = jpaAppointmentRepository.findByPatientIdAndCompanyId(patientId, companyId)
+    override fun findByPatientId(patientId: Long, companyId: Long): List<Appointment> {
+        val appointmentEntity = jpaAppointmentRepository.findAllByPatientIdAndCompanyId(patientId, companyId)
         val appointment = appointmentMapper.toDomain(appointmentEntity)
         return appointment
     }
