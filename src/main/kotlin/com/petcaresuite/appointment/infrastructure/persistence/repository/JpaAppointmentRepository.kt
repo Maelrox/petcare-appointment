@@ -36,6 +36,8 @@ interface JpaAppointmentRepository : JpaRepository<AppointmentEntity, Long> {
             AND (:#{#filter.ownerId} IS NULL OR :#{#filter.ownerId} = 0 OR p.owner_id = :#{#filter.ownerId})
             AND (:#{#filter.vetId} IS NULL OR :#{#filter.vetId} = 0 OR a.vet_id = :#{#filter.vetId})
             AND (:#{#filter.status} IS NULL OR :#{#filter.status} = '' OR a.status = :#{#filter.status})
+            AND (a.appointment_date >= :#{#filter.initialDate})
+            AND (a.appointment_date <= :#{#filter.finalDate})
             ORDER BY a.appointment_date ASC
         """,
         nativeQuery = true

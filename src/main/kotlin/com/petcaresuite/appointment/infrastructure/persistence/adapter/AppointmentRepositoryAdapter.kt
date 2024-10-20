@@ -5,6 +5,7 @@ import com.petcaresuite.appointment.domain.model.Appointment
 import com.petcaresuite.appointment.infrastructure.persistence.mapper.AppointmentEntityMapper
 import com.petcaresuite.appointment.infrastructure.persistence.repository.JpaAppointmentRepository
 import org.springframework.stereotype.Component
+import java.time.LocalDateTime
 
 @Component
 class AppointmentRepositoryAdapter(
@@ -25,7 +26,11 @@ class AppointmentRepositoryAdapter(
     }
 
     override fun findAllByFilter(filter: Appointment): List<Appointment> {
-        val appointments = jpaAppointmentRepository.findAllByFilterWithSpecieName(filter)
+        val adjustedFilter = filter.copy(
+            initialDate = filter.initialDate ?: LocalDateTime.of(2024, 1, 1, 0, 0),
+            finalDate = filter.finalDate ?: LocalDateTime.of(2040, 12, 31, 23, 59, 59)
+        )
+        val appointments = jpaAppointmentRepository.findAllByFilterWithSpecieName(adjustedFilter)
         return appointmentMapper.dtoToDomain(appointments)
     }
 
