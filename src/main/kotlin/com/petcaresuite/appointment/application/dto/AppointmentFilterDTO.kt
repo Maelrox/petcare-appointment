@@ -8,6 +8,7 @@ import java.time.LocalDateTime
 data class AppointmentFilterDTO(
     val id: Long?,
     val patientId: Long?,
+    val ownerId: Long?,
     val vetName: String?,
     val vetId: Long?,
     val status: String?,

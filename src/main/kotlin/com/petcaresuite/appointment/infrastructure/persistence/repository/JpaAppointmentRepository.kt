@@ -33,6 +33,7 @@ interface JpaAppointmentRepository : JpaRepository<AppointmentEntity, Long> {
             JOIN species s ON p.specie_id = s.id
             WHERE a.company_id = :#{#filter.companyId}
             AND (:#{#filter.patientId} IS NULL OR :#{#filter.patientId} = 0 OR a.patient_id = :#{#filter.patientId})
+            AND (:#{#filter.ownerId} IS NULL OR :#{#filter.ownerId} = 0 OR p.owner_id = :#{#filter.ownerId})
             AND (:#{#filter.vetId} IS NULL OR :#{#filter.vetId} = 0 OR a.vet_id = :#{#filter.vetId})
             AND (:#{#filter.status} IS NULL OR :#{#filter.status} = '' OR a.status = :#{#filter.status})
             ORDER BY a.appointment_date ASC
