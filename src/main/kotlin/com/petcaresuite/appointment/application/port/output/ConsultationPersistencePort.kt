@@ -14,4 +14,5 @@ interface ConsultationPersistencePort {
 
      fun findByConsultationId(consultationId: Long, companyId: Long): Consultation
 
+    fun findAllAttendedByOwnerIdAndCompanyId(ownerId: Long, companyId: Long): List<Consultation>
 }

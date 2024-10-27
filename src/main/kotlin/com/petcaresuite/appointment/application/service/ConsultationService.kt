@@ -43,4 +43,9 @@ class ConsultationService(
         return consultationMapper.toDTO(consultation)
     }
 
+    override fun getAllAttendedByOwnerId(ownerId: Long, companyId: Long): List<ConsultationDTO> {
+        val consultations = consultationPersistencePort.findAllAttendedByOwnerIdAndCompanyId(ownerId, companyId)
+        return consultationMapper.toListDomain(consultations)
+    }
+
 }

@@ -16,4 +16,6 @@ interface ConsultationMapper {
 
     fun toDTO(consultations: List<Consultation>): List<ConsultationDTO>
 
+    fun toListDomain(consultations: List<Consultation>): List<ConsultationDTO>
+
 }

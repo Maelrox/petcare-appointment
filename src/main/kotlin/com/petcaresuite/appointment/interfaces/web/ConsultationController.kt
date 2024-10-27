@@ -57,4 +57,11 @@ class ConsultationController(private val consultationUseCase: ConsultationUseCas
         return ResponseEntity.ok(paginatedResponse)
     }
 
+    @GetMapping("/owner/{ownerId}")
+    @Permissions(Modules.BILLING, ModuleActions.VIEW)
+    fun getAllByOwner(@PathVariable ownerId: Long, request: HttpServletRequest): ResponseEntity<List<ConsultationDTO>> {
+        val companyId  = request.getAttribute("companyId").toString().toLong()
+        return ResponseEntity.ok(consultationUseCase.getAllAttendedByOwnerId(ownerId, companyId))
+    }
+
 }

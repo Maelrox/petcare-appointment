@@ -13,8 +13,9 @@ interface ConsultationEntityMapper {
 
     fun toDomain(consultationEntity: ConsultationProjection): Consultation
 
-    fun toDomain(consultations: List<ConsultationEntity>): List<Consultation>
+    fun toDomain(consultationsEntity: List<ConsultationBillingProjection>): List<Consultation>
 
     fun dtoToDomain(consultations: List<ConsultationProjection>): List<Consultation>
+
 
 }

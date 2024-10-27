@@ -6,5 +6,5 @@ object Modules {
     const val APPOINTMENTS = "Appointment"
     const val FINANCES = "Finances"
     const val CONSULTATIONS = "Consultations"
-
+    const val BILLING = "Billing"
 }

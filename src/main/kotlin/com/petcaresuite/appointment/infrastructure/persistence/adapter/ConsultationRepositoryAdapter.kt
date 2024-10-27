@@ -42,4 +42,9 @@ class ConsultationRepositoryAdapter(
         return consultation
     }
 
+    override fun findAllAttendedByOwnerIdAndCompanyId(ownerId: Long, companyId: Long): List<Consultation> {
+        val consultationsEntity = jpaConsultationRepository.findAllAttendedByOwnerAndCompanyId(ownerId, companyId)
+        return consultationMapper.toDomain(consultationsEntity)
+    }
+
 }

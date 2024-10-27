@@ -2,6 +2,7 @@ package com.petcaresuite.appointment.infrastructure.persistence.repository
 
 import com.petcaresuite.appointment.domain.model.Consultation
 import com.petcaresuite.appointment.infrastructure.persistence.entity.ConsultationEntity
+import com.petcaresuite.appointment.infrastructure.persistence.mapper.ConsultationBillingProjection
 import com.petcaresuite.appointment.infrastructure.persistence.mapper.ConsultationProjection
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -25,7 +26,6 @@ interface JpaConsultationRepository : JpaRepository<ConsultationEntity, Long> {
             JOIN vets v ON c.vet_id = v.vet_id
             JOIN appointments a ON a.appointment_id = c.appointment_id
             WHERE c.company_id = :#{#filter.companyId}
-
             ORDER BY a.appointment_date ASC
         """,
         nativeQuery = true
@@ -34,4 +34,17 @@ interface JpaConsultationRepository : JpaRepository<ConsultationEntity, Long> {
 
     fun findByConsultationIdAndCompanyId(consultationId: Long, companyId: Long): ConsultationEntity
 
+    @Query(
+        value = """
+            SELECT c.consultation_id as consultationId,  c.reason as reason, c.status as status,
+                   c.consultation_date as consultationDate
+            FROM consultations c 
+            JOIN patients p ON p.patient_id = c.patient_id
+            WHERE c.company_id = :#{#companyId}
+            AND p.owner_id =  :#{#ownerId}
+            AND c.status = 'ATTENDED'
+        """,
+        nativeQuery = true
+    )
+    fun findAllAttendedByOwnerAndCompanyId(ownerId: Long, companyId: Long): List<ConsultationBillingProjection>
 }
