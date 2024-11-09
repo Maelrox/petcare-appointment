@@ -5,6 +5,7 @@ import com.petcaresuite.appointment.application.mapper.ConsultationMapper
 import com.petcaresuite.appointment.application.port.input.ConsultationUseCase
 import com.petcaresuite.appointment.application.port.output.ConsultationPersistencePort
 import com.petcaresuite.appointment.application.service.messages.Responses
+import com.petcaresuite.appointment.domain.exception.ConsultInvalidException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -17,7 +18,7 @@ class ConsultationService(
 ) :
     ConsultationUseCase {
     override fun save(consultationDTO: ConsultationDTO): ResponseDTO {
-        //validateAppointment(appointmentDTO)
+        validateConsultation(consultationDTO)
         consultationDTO.createdAt = LocalDateTime.now()
         consultationDTO.updatedAt = LocalDateTime.now()
         val consultation = consultationMapper.toDomain(consultationDTO)
@@ -26,7 +27,7 @@ class ConsultationService(
     }
 
     override fun update(consultationDTO: ConsultationDTO): ResponseDTO {
-        //validateAppointment(appointmentDTO)
+        validateConsultation(consultationDTO)
         val appointment = consultationMapper.toDomain(consultationDTO)
         consultationPersistencePort.update(appointment)
         return ResponseDTO(message = Responses.CONSULTATION_UPDATED)
@@ -47,5 +48,12 @@ class ConsultationService(
         val consultations = consultationPersistencePort.findAllAttendedByOwnerIdAndCompanyId(ownerId, companyId)
         return consultationMapper.toListDomain(consultations)
     }
+
+    private fun validateConsultation(consultationDTO: ConsultationDTO) {
+        if (consultationDTO.consultationDate.isBefore(LocalDateTime.now())) {
+            throw ConsultInvalidException(Responses.APPOINTMENT_INVALID_DATE)
+        }
+    }
+
 
 }

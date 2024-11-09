@@ -9,7 +9,7 @@ data class AppointmentDTO(
     val appointmentId: Long?,
     val patientId: Long,
     val vetName: String?,
-    val vetId: Long?,
+    val vetId: Long,
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
     val appointmentDate: LocalDateTime,
     val reason: String?,

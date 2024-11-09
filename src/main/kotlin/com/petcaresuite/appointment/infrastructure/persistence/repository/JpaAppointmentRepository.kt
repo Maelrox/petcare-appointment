@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
+import java.time.LocalDateTime
 
 @Repository
 interface JpaAppointmentRepository : JpaRepository<AppointmentEntity, Long> {
@@ -55,4 +56,19 @@ interface JpaAppointmentRepository : JpaRepository<AppointmentEntity, Long> {
 
     fun findAllByPatientIdAndCompanyId(patientId: Long, companyId: Long): List<AppointmentEntity>
 
+    @Query(
+        "SELECT a FROM AppointmentEntity a WHERE a.vetId = :vetId AND " +
+                "a.appointmentDate BETWEEN :startOfDay AND :endOfDay AND " +
+                "(a.appointmentDate BETWEEN :appointmentStart AND :appointmentEnd OR " +
+                "a.appointmentDate BETWEEN :appointmentStartMinusBuffer AND :appointmentEndPlusBuffer)"
+    )
+    fun findConflictingAppointments(
+        vetId: Long,
+        startOfDay: LocalDateTime,
+        endOfDay: LocalDateTime,
+        appointmentStart: LocalDateTime,
+        appointmentEnd: LocalDateTime,
+        appointmentStartMinusBuffer: LocalDateTime,
+        appointmentEndPlusBuffer: LocalDateTime
+    ): List<AppointmentEntity>
 }

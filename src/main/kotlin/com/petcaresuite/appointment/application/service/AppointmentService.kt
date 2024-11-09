@@ -5,29 +5,32 @@ import com.petcaresuite.appointment.application.mapper.AppointmentMapper
 import com.petcaresuite.appointment.application.port.input.AppointmentUseCase
 import com.petcaresuite.appointment.application.port.output.AppointmentPersistencePort
 import com.petcaresuite.appointment.application.service.messages.Responses
+import com.petcaresuite.appointment.domain.service.AppointmentDomainService
 import org.springframework.stereotype.Service
+import java.security.InvalidParameterException
 
 @Service
 class AppointmentService(
     private val appointmentPersistencePort: AppointmentPersistencePort,
     private val appointmentMapper: AppointmentMapper,
+    private val appointmentDomainService: AppointmentDomainService,
 ) :
     AppointmentUseCase {
     override fun save(appointmentDTO: AppointmentDTO): ResponseDTO {
-        //validateAppointment(appointmentDTO)
+        validateCreateAppointment(appointmentDTO)
         val appointment = appointmentMapper.toDomain(appointmentDTO)
         appointmentPersistencePort.save(appointment)
         return ResponseDTO(message = Responses.APPOINTMENT_SCHEDULED)
     }
 
     override fun update(appointmentDTO: AppointmentDTO): ResponseDTO {
-        //validateAppointment(appointmentDTO)
+        validateUpdateAppointment(appointmentDTO)
         val appointment = appointmentMapper.toDomain(appointmentDTO)
         appointmentPersistencePort.update(appointment)
         return ResponseDTO(message = Responses.APPOINTMENT_UPDATED)
     }
 
-    override fun getAllByFilter(filterDTO : AppointmentFilterDTO, companyId: Long): List<AppointmentDTO> {
+    override fun getAllByFilter(filterDTO: AppointmentFilterDTO, companyId: Long): List<AppointmentDTO> {
         val filter = appointmentMapper.toDomain(filterDTO)
         filter.companyId = companyId
         val appointments = appointmentPersistencePort.findAllByFilter(filter)
@@ -42,6 +45,30 @@ class AppointmentService(
     override fun getByPatientId(patientId: Long, companyId: Long): List<AppointmentDTO> {
         val appointments = appointmentPersistencePort.findByPatientId(patientId, companyId)
         return appointmentMapper.toDTO(appointments)
+    }
+
+    fun validateCreateAppointment(appointmentDTO: AppointmentDTO) {
+        if (appointmentDTO.appointmentId != null) {
+            throw InvalidParameterException(Responses.APPOINTMENT_ID_NOT_NULL)
+        }
+        appointmentDomainService.validateDate(appointmentDTO.appointmentDate)
+        appointmentDomainService.validateVeterinaryAvailability(
+            appointmentDTO.vetId,
+            appointmentDTO.appointmentDate,
+            null
+        )
+    }
+
+    fun validateUpdateAppointment(appointmentDTO: AppointmentDTO) {
+        if (appointmentDTO.appointmentId === null) {
+            throw InvalidParameterException(Responses.APPOINTMENT_ID_NOT_NULL)
+        }
+        appointmentDomainService.validateDate(appointmentDTO.appointmentDate)
+        appointmentDomainService.validateVeterinaryAvailability(
+            appointmentDTO.vetId,
+            appointmentDTO.appointmentDate,
+            appointmentDTO.appointmentId
+        )
     }
 
 }

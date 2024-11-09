@@ -6,7 +6,7 @@ interface AppointmentUseCase {
     
     fun save(appointmentDTO: AppointmentDTO): ResponseDTO
 
-    fun update(dto: AppointmentDTO): ResponseDTO?
+    fun update(appointmentDTO: AppointmentDTO): ResponseDTO?
 
     fun getAllByFilter(filterDTO: AppointmentFilterDTO, companyId: Long): List<AppointmentDTO>
 
