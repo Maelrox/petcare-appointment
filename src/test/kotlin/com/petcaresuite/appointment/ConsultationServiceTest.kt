@@ -3,11 +3,14 @@ package com.petcaresuite.appointment
 import com.petcaresuite.appointment.application.dto.ConsultationDTO
 import com.petcaresuite.appointment.application.dto.ConsultationFilterDTO
 import com.petcaresuite.appointment.application.mapper.ConsultationMapper
+import com.petcaresuite.appointment.application.port.output.AppointmentPersistencePort
 import com.petcaresuite.appointment.application.port.output.ConsultationPersistencePort
 import com.petcaresuite.appointment.application.service.ConsultationService
 import com.petcaresuite.appointment.application.service.messages.Responses
 import com.petcaresuite.appointment.domain.exception.ConsultInvalidException
 import com.petcaresuite.appointment.domain.model.Consultation
+import com.petcaresuite.appointment.domain.service.AppointmentDomainService
+import com.petcaresuite.appointment.domain.service.ConsultDomainService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -29,10 +32,20 @@ class ConsultationServiceTest {
     @Mock
     private lateinit var consultationMapper: ConsultationMapper
 
+    @Mock
+    private lateinit var appointmentPersistencePort: AppointmentPersistencePort
+
+    @Mock
+    private lateinit var consultDomainService: ConsultDomainService
+
+    @Mock
+    private lateinit var appointmentDomainService: AppointmentDomainService
+
     private lateinit var consultationService: ConsultationService
     private lateinit var mockConsultationDTO: ConsultationDTO
     private lateinit var mockConsultation: Consultation
     private lateinit var futureDateTime: LocalDateTime
+
 
     @BeforeEach
     fun setUp() {
@@ -76,7 +89,10 @@ class ConsultationServiceTest {
 
         consultationService = ConsultationService(
             consultationPersistencePort,
-            consultationMapper
+            consultationMapper,
+            appointmentPersistencePort,
+            consultDomainService,
+            appointmentDomainService
         )
     }
 

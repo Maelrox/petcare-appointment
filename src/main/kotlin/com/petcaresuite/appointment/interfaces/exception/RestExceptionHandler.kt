@@ -2,6 +2,9 @@ package com.petcaresuite.appointment.interfaces.exception
 
 import com.petcaresuite.appointment.application.dto.ErrorResponseDTO
 import com.petcaresuite.appointment.application.service.messages.InternalErrors
+import com.petcaresuite.appointment.domain.exception.AppointmentConflictException
+import com.petcaresuite.appointment.domain.exception.AppointmentInvalidException
+import com.petcaresuite.appointment.domain.exception.ConsultInvalidException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -18,6 +21,17 @@ class RestExceptionHandler {
 
     private val logger: Logger = LoggerFactory.getLogger(RestExceptionHandler::class.java)
 
+    @ExceptionHandler(AppointmentConflictException::class, ConsultInvalidException::class, AppointmentInvalidException::class)
+    fun handleDomainException(ex: Exception): ResponseEntity<ErrorResponseDTO> {
+        val message = ex.message ?: InternalErrors.UNHANDLED_EXCEPTION
+        val errorResponseDTO = ErrorResponseDTO(
+            status = HttpStatus.BAD_REQUEST.value(),
+            error = HttpStatus.BAD_REQUEST.reasonPhrase,
+            message = message,
+            path = getRequestPath()
+        )
+        return ResponseEntity.status(errorResponseDTO.status).body(errorResponseDTO)
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleValidationExceptions(ex: MethodArgumentNotValidException): ResponseEntity<ErrorResponseDTO> {

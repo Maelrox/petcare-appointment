@@ -1,7 +1,6 @@
 package com.petcaresuite.appointment.domain.valueobject
 
-enum class AppointmentStatus {
-    SCHEDULED,
+enum class ConsultationStatus {
     ATTENDED,
     PAID,
     CANCELLED

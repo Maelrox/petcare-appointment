@@ -11,5 +11,7 @@ object Responses {
     const val APPOINTMENT_ID_NULL = "Appointment id is null."
     const val APPOINTMENT_ID_NOT_NULL = "Appointment id is not null."
     const val CONSULTS_INVALID_DATE = "Consult date must be in the future."
+    const val CONSULT_INVALID_APPOINTMENT = "Invalid appointment."
+    const val CONSULT_INVALID_APPOINTMENT_STATUS = "Invalid appointment status."
 
 }

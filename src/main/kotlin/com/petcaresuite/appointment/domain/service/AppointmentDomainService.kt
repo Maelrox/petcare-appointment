@@ -54,6 +54,10 @@ class AppointmentDomainService(private val appointmentPersistencePort : Appointm
         appointment.status = AppointmentStatus.SCHEDULED.name
     }
 
+    fun applyAttendedStatus(appointment: Appointment) {
+        appointment.status = AppointmentStatus.ATTENDED.name
+    }
+
     fun setUpdatableFields(appointment: Appointment, appointmentNewData: Appointment): Appointment {
             return Appointment(
                 appointmentId = appointment.appointmentId,

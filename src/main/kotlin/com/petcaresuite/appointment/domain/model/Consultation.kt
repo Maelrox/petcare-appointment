@@ -14,7 +14,7 @@ data class Consultation(
     val treatment: String? = null,
     val notes: String? = null,
     val followUpDate: LocalDateTime? = null,
-    val status: String? = null,
+    var status: String? = null,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
     var ownerId: Long?
