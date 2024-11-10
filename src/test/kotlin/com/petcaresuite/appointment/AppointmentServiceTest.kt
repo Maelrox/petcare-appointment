@@ -62,7 +62,7 @@ class AppointmentServiceTest {
             companyId = 1L,
             reason = "General Check",
             status = "SCHEDULED",
-            ownerId = null,
+            ownerId = 1L,
             specieName = null,
             initialDate = null,
             finalDate = null
@@ -114,6 +114,8 @@ class AppointmentServiceTest {
         val updateAppointment = mockAppointment.copy(appointmentId = 1L)
 
         Mockito.`when`(appointmentMapper.toDomain(updateDTO)).thenReturn(updateAppointment)
+        Mockito.`when`(appointmentDomainService.setUpdatableFields(updateAppointment, updateAppointment)).thenReturn(updateAppointment)
+        Mockito.`when`(appointmentPersistencePort.findByAppointmentId(updateDTO.appointmentId!!, mockAppointmentDTO.companyId!!)).thenReturn(updateAppointment)
         Mockito.`when`(appointmentPersistencePort.update(updateAppointment)).thenReturn(updateAppointment)
 
         // When

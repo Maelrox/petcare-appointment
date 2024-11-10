@@ -25,4 +25,6 @@ interface AppointmentPersistencePort {
         appointmentEndPlusBuffer: LocalDateTime
     ): List<Appointment>
 
+    fun findOwnerIdByPatientIdAndCompanyId(patientId: Long, companyId: Long): Long?
+
 }

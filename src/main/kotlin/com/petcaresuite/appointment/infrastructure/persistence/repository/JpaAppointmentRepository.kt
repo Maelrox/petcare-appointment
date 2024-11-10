@@ -71,4 +71,13 @@ interface JpaAppointmentRepository : JpaRepository<AppointmentEntity, Long> {
         appointmentStartMinusBuffer: LocalDateTime,
         appointmentEndPlusBuffer: LocalDateTime
     ): List<AppointmentEntity>
+
+    @Query(
+        """
+    SELECT p.owner_id FROM patients p 
+    JOIN owners o on o.owner_id = p.owner_id
+    WHERE p.patient_id = :patientId and o.company_id = :companyId
+    """, nativeQuery = true
+    )
+    fun findOwnerIdByPatientIdAndCompanyId(patientId: Long, companyId: Long): Long
 }

@@ -4,6 +4,8 @@ import com.petcaresuite.appointment.application.port.output.AppointmentPersisten
 import com.petcaresuite.appointment.application.service.messages.Responses
 import com.petcaresuite.appointment.domain.exception.AppointmentConflictException
 import com.petcaresuite.appointment.domain.exception.AppointmentInvalidException
+import com.petcaresuite.appointment.domain.model.Appointment
+import com.petcaresuite.appointment.domain.valueobject.AppointmentStatus
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
@@ -46,6 +48,31 @@ class AppointmentDomainService(private val appointmentPersistencePort : Appointm
         if (!isAppointmentInList && conflictingAppointments.isNotEmpty()) {
             throw AppointmentConflictException(Responses.APPOINTMENT_CONFLICT)
         }
+    }
+
+    fun applyInitialStatus(appointment: Appointment) {
+        appointment.status = AppointmentStatus.SCHEDULED.name
+    }
+
+    fun setUpdatableFields(appointment: Appointment, appointmentNewData: Appointment): Appointment {
+            return Appointment(
+                appointmentId = appointment.appointmentId,
+                patientId = appointmentNewData.patientId,
+                vetId = appointmentNewData.vetId,
+                appointmentDate = appointmentNewData.appointmentDate,
+                reason = appointmentNewData.reason,
+                companyId = appointment.companyId,
+                status = AppointmentStatus.SCHEDULED.name,
+                ownerId = null,
+                specieName = null,
+                initialDate = null,
+                finalDate = null
+            )
+    }
+
+    fun validatePatientAndOwnerId(patientId: Long, companyId: Long) {
+        appointmentPersistencePort.findOwnerIdByPatientIdAndCompanyId(patientId, companyId)
+            ?: throw AppointmentInvalidException(Responses.APPOINTMENT_INVALID_PATIENT)
     }
 
 }

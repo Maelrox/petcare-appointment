@@ -19,14 +19,17 @@ class AppointmentService(
     override fun save(appointmentDTO: AppointmentDTO): ResponseDTO {
         validateCreateAppointment(appointmentDTO)
         val appointment = appointmentMapper.toDomain(appointmentDTO)
+        appointmentDomainService.applyInitialStatus(appointment)
         appointmentPersistencePort.save(appointment)
         return ResponseDTO(message = Responses.APPOINTMENT_SCHEDULED)
     }
 
     override fun update(appointmentDTO: AppointmentDTO): ResponseDTO {
         validateUpdateAppointment(appointmentDTO)
-        val appointment = appointmentMapper.toDomain(appointmentDTO)
-        appointmentPersistencePort.update(appointment)
+        val appointmentNewData = appointmentMapper.toDomain(appointmentDTO)
+        val appointment = appointmentPersistencePort.findByAppointmentId(appointmentDTO.appointmentId!!, appointmentDTO.companyId!!)
+        val updatableAppointment = appointmentDomainService.setUpdatableFields(appointment, appointmentNewData)
+        appointmentPersistencePort.update(updatableAppointment)
         return ResponseDTO(message = Responses.APPOINTMENT_UPDATED)
     }
 
@@ -57,6 +60,7 @@ class AppointmentService(
             appointmentDTO.appointmentDate,
             null
         )
+        appointmentDomainService.validatePatientAndOwnerId(appointmentDTO.patientId, appointmentDTO.companyId!!)
     }
 
     fun validateUpdateAppointment(appointmentDTO: AppointmentDTO) {
@@ -69,6 +73,8 @@ class AppointmentService(
             appointmentDTO.appointmentDate,
             appointmentDTO.appointmentId
         )
+        appointmentDomainService.validatePatientAndOwnerId(appointmentDTO.patientId, appointmentDTO.companyId!!)
+
     }
 
 }

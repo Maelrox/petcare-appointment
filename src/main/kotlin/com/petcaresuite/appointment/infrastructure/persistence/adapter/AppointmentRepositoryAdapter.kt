@@ -69,4 +69,8 @@ class AppointmentRepositoryAdapter(
         return appointmentMapper.dtoListToDomain(conflictingAppointments)
     }
 
+    override fun findOwnerIdByPatientIdAndCompanyId(patientId: Long, companyId: Long): Long {
+        return jpaAppointmentRepository.findOwnerIdByPatientIdAndCompanyId(patientId, companyId)
+    }
+
 }

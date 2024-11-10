@@ -9,7 +9,7 @@ data class Appointment(
     val appointmentDate: LocalDateTime?,
     val reason: String?,
     var companyId: Long?,
-    val status: String?,
+    var status: String?,
     var ownerId: Long?,
     val specieName: String?,
     val initialDate: LocalDateTime?,
