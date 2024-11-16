@@ -27,4 +27,6 @@ interface AppointmentPersistencePort {
 
     fun findOwnerIdByPatientIdAndCompanyId(patientId: Long, companyId: Long): Long?
 
+    fun getAppointmentsByStatusAndDate(status: String, beforeDate: LocalDateTime): List<Appointment>
+
 }

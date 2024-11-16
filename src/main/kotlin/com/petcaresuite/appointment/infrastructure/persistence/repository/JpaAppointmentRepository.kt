@@ -80,4 +80,12 @@ interface JpaAppointmentRepository : JpaRepository<AppointmentEntity, Long> {
     """, nativeQuery = true
     )
     fun findOwnerIdByPatientIdAndCompanyId(patientId: Long, companyId: Long): Long
+
+    @Query(
+        "SELECT a FROM AppointmentEntity a WHERE a.status = :status AND a.appointmentDate < :finalDate"
+    )
+    fun findByStatusAndDateBefore(
+        @Param("status") status: String,
+        @Param("finalDate") finalDate: LocalDateTime
+    ): List<AppointmentEntity>
 }

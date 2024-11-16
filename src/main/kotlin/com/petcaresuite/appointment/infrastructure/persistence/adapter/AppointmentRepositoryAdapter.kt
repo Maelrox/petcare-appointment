@@ -73,4 +73,8 @@ class AppointmentRepositoryAdapter(
         return jpaAppointmentRepository.findOwnerIdByPatientIdAndCompanyId(patientId, companyId)
     }
 
+    override fun getAppointmentsByStatusAndDate(status: String, beforeDate: LocalDateTime): List<Appointment> {
+        return appointmentMapper.toDomain(jpaAppointmentRepository.findByStatusAndDateBefore(status, beforeDate))
+    }
+
 }
