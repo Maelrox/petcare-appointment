@@ -36,6 +36,7 @@ class AppointmentService(
     override fun getAllByFilter(filterDTO: AppointmentFilterDTO, companyId: Long): List<AppointmentDTO> {
         val filter = appointmentMapper.toDomain(filterDTO)
         filter.companyId = companyId
+        appointmentDomainService.applyInitialDate(filter)
         val appointments = appointmentPersistencePort.findAllByFilter(filter)
         return appointmentMapper.toDTO(appointments)
     }

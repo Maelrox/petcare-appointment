@@ -12,6 +12,6 @@ data class Appointment(
     var status: String?,
     var ownerId: Long?,
     val specieName: String?,
-    val initialDate: LocalDateTime?,
+    var initialDate: LocalDateTime?,
     val finalDate: LocalDateTime?,
     )
