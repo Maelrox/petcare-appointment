@@ -6,6 +6,7 @@ import com.petcaresuite.appointment.application.service.messages.Responses
 import com.petcaresuite.appointment.domain.exception.AppointmentConflictException
 import com.petcaresuite.appointment.domain.exception.AppointmentInvalidException
 import com.petcaresuite.appointment.domain.exception.ConsultInvalidException
+import feign.FeignException.FeignClientException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.dao.EmptyResultDataAccessException
@@ -57,6 +58,19 @@ class RestExceptionHandler {
         val errorResponseDTO = ErrorResponseDTO(
             status = HttpStatus.BAD_REQUEST.value(),
             error = HttpStatus.BAD_REQUEST.reasonPhrase,
+            message = message,
+            path = getRequestPath()
+        )
+        return ResponseEntity.status(errorResponseDTO.status).body(errorResponseDTO)
+    }
+
+    @ExceptionHandler(FeignClientException::class)
+    fun handleFeignException(ex: FeignClientException): ResponseEntity<ErrorResponseDTO> {
+        val message = Responses.INVALID_SESSION
+        logger.error(message)
+        val errorResponseDTO = ErrorResponseDTO(
+            status = HttpStatus.UNAUTHORIZED.value(),
+            error = HttpStatus.UNAUTHORIZED.reasonPhrase,
             message = message,
             path = getRequestPath()
         )

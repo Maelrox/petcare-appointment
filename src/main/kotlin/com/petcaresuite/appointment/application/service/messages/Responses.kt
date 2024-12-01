@@ -20,5 +20,6 @@ object Responses {
     const val CONSULT_CANCEL_ERROR_CONSULT_NOT_ATTENDED = "This consult is not in attended status."
     const val CONSULT_CANCEL_ERROR_APPOINTMENT_NOT_ATTENDED = "Appointment associated to this consult is not attended."
     const val INVALID_DATA = "The operation has invalid data"
+    const val INVALID_SESSION = "The session is invalid"
 
 }
