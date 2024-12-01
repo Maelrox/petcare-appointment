@@ -36,6 +36,13 @@ class ConsultationController(private val consultationUseCase: ConsultationUseCas
         return ResponseEntity.ok(consultationUseCase.getByConsultationId(consultationId, companyId))
     }
 
+    @DeleteMapping("/{consultationId}")
+    @Permissions(Modules.CONSULTATIONS, ModuleActions.DELETE)
+    fun cancelConsultation(@PathVariable consultationId: Long, request: HttpServletRequest): ResponseEntity<ResponseDTO> {
+        val companyId  = request.getAttribute("companyId").toString().toLong()
+        return ResponseEntity.ok(consultationUseCase.cancel(consultationId, companyId))
+    }
+
     @PostMapping("/search")
     @Permissions(Modules.CONSULTATIONS, ModuleActions.VIEW)
     fun searchConsultations(@RequestBody filterDTO: ConsultationFilterDTO, @RequestParam(defaultValue = "0") page: Int, @RequestParam(defaultValue = "30") size: Int, request: HttpServletRequest): ResponseEntity<PaginatedResponseDTO<ConsultationDTO>> {

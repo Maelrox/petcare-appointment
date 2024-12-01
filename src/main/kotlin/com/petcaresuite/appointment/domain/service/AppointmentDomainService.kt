@@ -1,6 +1,7 @@
 package com.petcaresuite.appointment.domain.service
 
 import com.petcaresuite.appointment.application.port.output.AppointmentPersistencePort
+import com.petcaresuite.appointment.application.port.output.ConsultationPersistencePort
 import com.petcaresuite.appointment.application.service.messages.Responses
 import com.petcaresuite.appointment.domain.exception.AppointmentConflictException
 import com.petcaresuite.appointment.domain.exception.AppointmentInvalidException
@@ -10,7 +11,10 @@ import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 @Service
-class AppointmentDomainService(private val appointmentPersistencePort : AppointmentPersistencePort) {
+class AppointmentDomainService(
+    private val appointmentPersistencePort: AppointmentPersistencePort,
+    private val consultationPersistencePort: ConsultationPersistencePort,
+) {
 
     val appointmentMaxMinutesDuration: Long = 29
 
@@ -43,7 +47,8 @@ class AppointmentDomainService(private val appointmentPersistencePort : Appointm
             appointmentStartMinusBuffer,
             appointmentEndPlusBuffer
         )
-        val isAppointmentInList = appointmentId != null && conflictingAppointments.any { it.appointmentId == appointmentId }
+        val isAppointmentInList =
+            appointmentId != null && conflictingAppointments.any { it.appointmentId == appointmentId }
 
         if (!isAppointmentInList && conflictingAppointments.isNotEmpty()) {
             throw AppointmentConflictException(Responses.APPOINTMENT_CONFLICT)
@@ -51,7 +56,8 @@ class AppointmentDomainService(private val appointmentPersistencePort : Appointm
     }
 
     fun applyInitialDate(filter: Appointment) {
-        filter.initialDate = filter.initialDate ?: LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0)
+        filter.initialDate =
+            filter.initialDate ?: LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0)
     }
 
     fun applyInitialStatus(appointment: Appointment) {
@@ -63,24 +69,36 @@ class AppointmentDomainService(private val appointmentPersistencePort : Appointm
     }
 
     fun setUpdatableFields(appointment: Appointment, appointmentNewData: Appointment): Appointment {
-            return Appointment(
-                appointmentId = appointment.appointmentId,
-                patientId = appointmentNewData.patientId,
-                vetId = appointmentNewData.vetId,
-                appointmentDate = appointmentNewData.appointmentDate,
-                reason = appointmentNewData.reason,
-                companyId = appointment.companyId,
-                status = AppointmentStatus.SCHEDULED.name,
-                ownerId = null,
-                specieName = null,
-                initialDate = null,
-                finalDate = null
-            )
+        return Appointment(
+            appointmentId = appointment.appointmentId,
+            patientId = appointmentNewData.patientId,
+            vetId = appointmentNewData.vetId,
+            appointmentDate = appointmentNewData.appointmentDate,
+            reason = appointmentNewData.reason,
+            companyId = appointment.companyId,
+            status = AppointmentStatus.SCHEDULED.name,
+            ownerId = null,
+            specieName = null,
+            initialDate = null,
+            finalDate = null
+        )
     }
 
     fun validatePatientAndOwnerId(patientId: Long, companyId: Long) {
         appointmentPersistencePort.findOwnerIdByPatientIdAndCompanyId(patientId, companyId)
             ?: throw AppointmentInvalidException(Responses.APPOINTMENT_INVALID_PATIENT)
+    }
+
+    fun cancelAppointment(appointment: Appointment) {
+        if (appointment.status != AppointmentStatus.SCHEDULED.name) {
+            throw AppointmentInvalidException(Responses.APPOINTMENT_NOT_SCHEDULED)
+        }
+        if (consultationPersistencePort.existByConsultationId(appointment.appointmentId ?: throw IllegalArgumentException("Appointment ID cannot be null"))) {
+            throw AppointmentInvalidException(Responses.APPOINTMENT_HAS_CONSULT)
+        }
+
+        appointment.status = AppointmentStatus.CANCELLED.name
+        appointmentPersistencePort.save(appointment)
     }
 
 }

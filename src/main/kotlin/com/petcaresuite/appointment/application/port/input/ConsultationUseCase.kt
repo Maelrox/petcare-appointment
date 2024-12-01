@@ -15,4 +15,6 @@ interface ConsultationUseCase {
     fun getByConsultationId(consultationId: Long, companyId: Long): ConsultationDTO
 
     fun getAllAttendedByOwnerId(ownerId: Long, companyId: Long): List<ConsultationDTO>
+
+    fun cancel(consultationId: Long, companyId: Long): ResponseDTO?
 }

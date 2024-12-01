@@ -60,6 +60,13 @@ class ConsultationService(
         return consultationMapper.toListDomain(consultations)
     }
 
+    override fun cancel(consultationId: Long, companyId: Long): ResponseDTO? {
+        val consultation = consultationPersistencePort.findByConsultationId(consultationId, companyId)
+        val appointment = appointmentPersistencePort.findByAppointmentId(consultation.appointmentId!!, companyId)
+        consultDomainService.cancelConsultation(appointment, consultation)
+        return ResponseDTO(message = Responses.CONSULT_CANCELLED)
+    }
+
     private fun validateConsultation(consultationDTO: ConsultationDTO, appointment: Appointment) {
         if (consultationDTO.consultationDate.isBefore(LocalDateTime.now())) {
             throw ConsultInvalidException(Responses.APPOINTMENT_INVALID_DATE)

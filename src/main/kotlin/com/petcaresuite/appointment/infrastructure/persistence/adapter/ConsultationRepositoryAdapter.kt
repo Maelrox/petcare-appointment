@@ -47,4 +47,8 @@ class ConsultationRepositoryAdapter(
         return consultationMapper.toDomain(consultationsEntity)
     }
 
+    override fun existByConsultationId(consultationId: Long): Boolean {
+        return jpaConsultationRepository.existsById(consultationId)
+    }
+
 }

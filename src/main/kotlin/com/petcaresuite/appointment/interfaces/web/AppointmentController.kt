@@ -28,6 +28,13 @@ class AppointmentController(private val appointmentUseCase: AppointmentUseCase) 
         return ResponseEntity.ok(appointmentUseCase.update(dto))
     }
 
+    @PatchMapping("/{appointmentId}")
+    @Permissions(Modules.APPOINTMENTS, ModuleActions.UPDATE)
+    fun cancelAppointment(@PathVariable appointmentId: Long, request: HttpServletRequest): ResponseEntity<ResponseDTO> {
+        val companyId  = request.getAttribute("companyId").toString().toLong()
+        return ResponseEntity.ok(appointmentUseCase.cancel(appointmentId, companyId))
+    }
+
     @GetMapping("/{appointmentId}")
     @Permissions(Modules.APPOINTMENTS, ModuleActions.VIEW)
     fun getAppointment(@PathVariable appointmentId: Long, request: HttpServletRequest): ResponseEntity<AppointmentDTO> {

@@ -14,4 +14,6 @@ interface AppointmentUseCase {
 
     fun getByPatientId(patientId: Long, companyId: Long): List<AppointmentDTO>
 
+    fun cancel(appointmentId: Long, companyId: Long): ResponseDTO?
+
 }

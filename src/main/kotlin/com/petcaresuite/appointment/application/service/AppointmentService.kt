@@ -51,6 +51,12 @@ class AppointmentService(
         return appointmentMapper.toDTO(appointments)
     }
 
+    override fun cancel(appointmentId: Long, companyId: Long): ResponseDTO? {
+        val appointment = appointmentPersistencePort.findByAppointmentId(appointmentId, companyId)
+        appointmentDomainService.cancelAppointment(appointment)
+        return ResponseDTO(message = Responses.APPOINTMENT_CANCELLED)
+    }
+
     fun validateCreateAppointment(appointmentDTO: AppointmentDTO) {
         if (appointmentDTO.appointmentId != null) {
             throw InvalidParameterException(Responses.APPOINTMENT_ID_NOT_NULL)
