@@ -38,7 +38,6 @@ class PermissionsInterceptor(private val managementClientProvider: ObjectProvide
                         .request(e.request())
                         .build()
                     throw FeignException.errorStatus("FeignClientException", feignResponse)
-
                 } catch (e: Exception) {
                     throw IllegalAccessException(e.message)
                 }
