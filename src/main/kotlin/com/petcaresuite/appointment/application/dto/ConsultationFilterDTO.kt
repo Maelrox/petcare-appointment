@@ -15,5 +15,8 @@ data class ConsultationFilterDTO(
     val followUpDate: LocalDateTime? = null,
     val status: String?,
     val createdAt: LocalDateTime?,
-    val updatedAt: LocalDateTime?
+    val updatedAt: LocalDateTime?,
+    val veterinaryName: String?,
+    val ownerName: String?,
+    val patientName: String?,
 )

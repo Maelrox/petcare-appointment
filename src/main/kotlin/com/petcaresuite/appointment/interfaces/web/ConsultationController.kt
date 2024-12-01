@@ -43,9 +43,9 @@ class ConsultationController(private val consultationUseCase: ConsultationUseCas
         return ResponseEntity.ok(consultationUseCase.cancel(consultationId, companyId))
     }
 
-    @PostMapping("/search")
+    @GetMapping("/search")
     @Permissions(Modules.CONSULTATIONS, ModuleActions.VIEW)
-    fun searchConsultations(@RequestBody filterDTO: ConsultationFilterDTO, @RequestParam(defaultValue = "0") page: Int, @RequestParam(defaultValue = "30") size: Int, request: HttpServletRequest): ResponseEntity<PaginatedResponseDTO<ConsultationDTO>> {
+    fun searchConsultations(@ModelAttribute filterDTO: ConsultationFilterDTO, @RequestParam(defaultValue = "0") page: Int, @RequestParam(defaultValue = "30") size: Int, request: HttpServletRequest): ResponseEntity<PaginatedResponseDTO<ConsultationDTO>> {
         val pageable = PageRequest.of(page, size)
         val companyId  = request.getAttribute("companyId").toString().toLong()
         val result = consultationUseCase.getAllByFilterPaginated(filterDTO, pageable, companyId)

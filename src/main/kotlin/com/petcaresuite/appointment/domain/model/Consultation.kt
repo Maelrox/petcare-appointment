@@ -17,7 +17,10 @@ data class Consultation(
     var status: String? = null,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
-    var ownerId: Long?
+    var ownerId: Long?,
+    val veterinaryName: String? = null,
+    val ownerName: String? = null,
+    val patientName: String? = null,
 
 ) {
 

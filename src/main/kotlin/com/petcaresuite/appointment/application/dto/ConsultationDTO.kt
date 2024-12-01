@@ -21,4 +21,7 @@ data class ConsultationDTO(
     var updatedAt: LocalDateTime?,
     var companyId: Long?,
     val ownerId: Long?,
+    val veterinaryName: String?,
+    val ownerName: String?,
+    val patientName: String?,
 )

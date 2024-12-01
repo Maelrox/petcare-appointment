@@ -66,7 +66,10 @@ class ConsultationServiceTest {
             createdAt = null,
             updatedAt = null,
             companyId = 1L,
-            ownerId = 1L
+            ownerId = 1L,
+            veterinaryName = null,
+            ownerName = null,
+            patientName = null
         )
 
         mockConsultation = Consultation(
@@ -159,7 +162,10 @@ class ConsultationServiceTest {
             notes = null,
             followUpDate = null,
             createdAt = null,
-            updatedAt = null
+            updatedAt = null,
+            veterinaryName = null,
+            ownerName = null,
+            patientName = null
         )
         val consultationsList = listOf(mockConsultation)
         val consultationsPage: Page<Consultation> = PageImpl(consultationsList)
