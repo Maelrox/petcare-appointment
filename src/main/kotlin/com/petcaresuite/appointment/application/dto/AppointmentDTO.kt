@@ -17,4 +17,6 @@ data class AppointmentDTO(
     var companyId: Long?,
     val ownerId: Long?,
     val specieName: String?,
+    val serviceId: Long? = null,
+    val serviceName: String? = null,
 )

@@ -11,4 +11,5 @@ interface AppointmentProjection {
     val reason: String?
     val status: String?
     val specieName: String?
+    val serviceName: String?
 }

@@ -29,5 +29,8 @@ data class AppointmentEntity(
 
     @Column(name = "status", length = 50)
     val status: String? = null,
+    
+    @Column(name = "service_id", length = 50)
+    val serviceId: Long? = null,
 
 )

@@ -77,6 +77,7 @@ class AppointmentDomainService(
             reason = appointmentNewData.reason,
             companyId = appointment.companyId,
             status = AppointmentStatus.SCHEDULED.name,
+            serviceId = appointmentNewData.serviceId,
             ownerId = null,
             specieName = null,
             initialDate = null,

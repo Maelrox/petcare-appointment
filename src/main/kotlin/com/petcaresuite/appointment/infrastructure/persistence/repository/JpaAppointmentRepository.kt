@@ -28,10 +28,11 @@ interface JpaAppointmentRepository : JpaRepository<AppointmentEntity, Long> {
         value = """
             SELECT a.appointment_id as appointmentId, a.patient_id as patientId, a.vet_id as vetId, 
                    a.company_id as companyId, a.appointment_date as appointmentDate, 
-                   a.reason as reason, a.status as status, s.name as specieName
+                   a.reason as reason, a.status as status, s.name as specieName, sv.name as serviceName
             FROM appointments a
             JOIN patients p ON a.patient_id = p.patient_id
             JOIN species s ON p.specie_id = s.id
+            JOIN services sv ON a.service_id = sv.service_id
             WHERE a.company_id = :#{#filter.companyId}
             AND (:#{#filter.patientId} IS NULL OR :#{#filter.patientId} = 0 OR a.patient_id = :#{#filter.patientId})
             AND (:#{#filter.ownerId} IS NULL OR :#{#filter.ownerId} = 0 OR p.owner_id = :#{#filter.ownerId})
@@ -88,4 +89,11 @@ interface JpaAppointmentRepository : JpaRepository<AppointmentEntity, Long> {
         @Param("status") status: String,
         @Param("finalDate") finalDate: LocalDateTime
     ): List<AppointmentEntity>
+
+    @Query(
+        """
+    SELECT s.name FROM services s WHERE s.service_id = :serviceId
+    """, nativeQuery = true
+    )
+    fun getServiceName(@Param("serviceId") serviceId: Long): String?
 }

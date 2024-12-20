@@ -24,4 +24,5 @@ data class ConsultationDTO(
     val veterinaryName: String?,
     val ownerName: String?,
     val patientName: String?,
+    val serviceId: Long? = null,
 )

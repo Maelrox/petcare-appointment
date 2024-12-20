@@ -14,4 +14,6 @@ data class Appointment(
     val specieName: String?,
     var initialDate: LocalDateTime?,
     val finalDate: LocalDateTime?,
+    val serviceId: Long? = null,
+    var serviceName: String? = null,
     )

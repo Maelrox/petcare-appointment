@@ -21,6 +21,7 @@ data class Consultation(
     val veterinaryName: String? = null,
     val ownerName: String? = null,
     val patientName: String? = null,
+    val serviceId: Long? = null,
 
 ) {
 

@@ -38,7 +38,9 @@ class AppointmentRepositoryAdapter(
         val appointmentEntity = jpaAppointmentRepository.findByAppointmentIdAndCompanyId(appointmentId, companyId)
         val appointment = appointmentMapper.toDomain(appointmentEntity)
         val ownerId = jpaAppointmentRepository.getPatientOwner(appointment.patientId!!)
+        val serviceName = jpaAppointmentRepository.getServiceName(appointment.serviceId!!)
         appointment.ownerId = ownerId
+        appointment.serviceName = serviceName
         return appointment
     }
 

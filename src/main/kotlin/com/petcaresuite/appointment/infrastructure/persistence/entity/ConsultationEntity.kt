@@ -48,6 +48,9 @@ data class ConsultationEntity(
     val createdAt: LocalDateTime = LocalDateTime.now(),
 
     @Column(name = "updated_at", nullable = false)
-    val updatedAt: LocalDateTime = LocalDateTime.now()
+    val updatedAt: LocalDateTime = LocalDateTime.now(),
+
+    @Column(name = "service_id", length = 50)
+    val serviceId: Long? = null,
 
 )

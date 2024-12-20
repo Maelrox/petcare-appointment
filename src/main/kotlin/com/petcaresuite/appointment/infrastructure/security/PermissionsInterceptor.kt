@@ -45,4 +45,5 @@ class PermissionsInterceptor(private val managementClientProvider: ObjectProvide
         }
         return true
     }
+
 }
