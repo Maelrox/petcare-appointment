@@ -20,12 +20,14 @@ interface JpaConsultationRepository : JpaRepository<ConsultationEntity, Long> {
                    c.reason as reason, c.diagnosis as diagnosis, c.treatment as treatment, c.notes as notes, c.status as status,
                    c.follow_up_date as followUpDate, c.consultation_date as consultationDate, v.name as veterinaryName,
                    o.name as ownerName, p.name as patientName, a.appointment_date as appointmentDate, 
-                   v.name as veterinaryName, o.name as ownerName
+                   v.name as veterinaryName, o.name as ownerName, s.service_id as serviceId, s.name as serviceName, 
+                   c.created_at as created_at, c.updated_at as updated_at  
             FROM consultations c
             JOIN patients p ON c.patient_id = p.patient_id
             JOIN owners o ON p.owner_id = o.owner_id
             JOIN vets v ON c.vet_id = v.vet_id
             JOIN appointments a ON a.appointment_id = c.appointment_id
+            JOIN services s on s.service_id = c.service_id
             WHERE c.company_id = :#{#filter.companyId}
             AND (COALESCE(:#{#filter.status}, '') = '' OR c.status = :#{#filter.status})
             AND (COALESCE(:#{#filter.ownerName}, '') = '' OR LOWER(o.name) LIKE LOWER(CONCAT('%', COALESCE(:#{#filter.ownerName}, ''), '%')))
@@ -37,14 +39,36 @@ interface JpaConsultationRepository : JpaRepository<ConsultationEntity, Long> {
     )
     fun findAllByFilter(filter: Consultation, pageable: Pageable): Page<ConsultationProjection>
 
-    fun findByConsultationIdAndCompanyId(consultationId: Long, companyId: Long): ConsultationEntity
+    @Query(
+        value = """
+            SELECT c.consultation_id as consultationId, c.patient_id as patientId, c.vet_id as vetId, 
+                   c.company_id as companyId, c.appointment_id as appointmentId,
+                   c.reason as reason, c.diagnosis as diagnosis, c.treatment as treatment, c.notes as notes, c.status as status,
+                   c.follow_up_date as followUpDate, c.consultation_date as consultationDate, v.name as veterinaryName,
+                   o.name as ownerName, p.name as patientName, a.appointment_date as appointmentDate, 
+                   v.name as veterinaryName, o.name as ownerName, s.service_id as serviceId, s.name as serviceName, 
+                   c.created_at as created_at, c.updated_at as updated_at 
+            FROM consultations c 
+            JOIN patients p ON p.patient_id = c.patient_id
+            JOIN services s on s.service_id = c.service_id
+            JOIN owners o ON p.owner_id = o.owner_id
+            JOIN vets v ON c.vet_id = v.vet_id
+            JOIN appointments a ON a.appointment_id = c.appointment_id
+            WHERE c.company_id = :#{#companyId}
+            AND c.consultation_id =  :#{#consultationId}
+            AND c.status = 'ATTENDED'
+        """,
+        nativeQuery = true
+    )
+    fun findByConsultationIdAndCompanyId(consultationId: Long, companyId: Long): ConsultationProjection
 
     @Query(
         value = """
             SELECT c.consultation_id as consultationId,  c.reason as reason, c.status as status,
-                   c.consultation_date as consultationDate
+                   c.consultation_date as consultationDate, s.service_id as serviceId, s.name as serviceName, s.price as price
             FROM consultations c 
             JOIN patients p ON p.patient_id = c.patient_id
+            JOIN services s ON s.service_id = c.service_id
             WHERE c.company_id = :#{#companyId}
             AND p.owner_id =  :#{#ownerId}
             AND c.status = 'ATTENDED'

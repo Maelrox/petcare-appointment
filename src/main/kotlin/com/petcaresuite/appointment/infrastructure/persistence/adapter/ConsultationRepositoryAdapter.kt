@@ -35,8 +35,8 @@ class ConsultationRepositoryAdapter(
     }
 
     override fun findByConsultationId(consultationId: Long, companyId: Long): Consultation {
-        val consultationEntity = jpaConsultationRepository.findByConsultationIdAndCompanyId(consultationId, companyId)
-        val consultation = consultationMapper.toDomain(consultationEntity)
+        val consultationProjection = jpaConsultationRepository.findByConsultationIdAndCompanyId(consultationId, companyId)
+        val consultation = consultationMapper.toDomain(consultationProjection)
         val ownerId = jpaAppointmentRepository.getPatientOwner(consultation.patientId!!)
         consultation.ownerId = ownerId
         return consultation

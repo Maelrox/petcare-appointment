@@ -17,4 +17,6 @@ interface AppointmentEntityMapper {
 
     fun dtoListToDomain(appointments: List<AppointmentEntity>): List<Appointment>
 
+    fun projectionToDomain(appointmentEntity: List<AppointmentProjection>): List<Appointment>
+
 }

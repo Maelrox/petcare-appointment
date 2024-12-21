@@ -6,6 +6,7 @@ import com.petcaresuite.appointment.application.port.input.AppointmentUseCase
 import com.petcaresuite.appointment.application.port.output.AppointmentPersistencePort
 import com.petcaresuite.appointment.application.service.messages.Responses
 import com.petcaresuite.appointment.domain.service.AppointmentDomainService
+import com.petcaresuite.appointment.domain.valueobject.AppointmentStatus
 import org.springframework.stereotype.Service
 import java.security.InvalidParameterException
 
@@ -47,7 +48,7 @@ class AppointmentService(
     }
 
     override fun getByPatientId(patientId: Long, companyId: Long): List<AppointmentDTO> {
-        val appointments = appointmentPersistencePort.findByPatientId(patientId, companyId)
+        val appointments = appointmentPersistencePort.findByPatientId(patientId, companyId, AppointmentStatus.CANCELLED.name)
         return appointmentMapper.toDTO(appointments)
     }
 

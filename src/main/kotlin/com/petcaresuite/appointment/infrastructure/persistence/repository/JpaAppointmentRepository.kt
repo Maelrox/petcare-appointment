@@ -55,10 +55,29 @@ interface JpaAppointmentRepository : JpaRepository<AppointmentEntity, Long> {
     )
     fun getPatientOwner(@Param("patientId") patientId: Long): Long?
 
-    fun findAllByPatientIdAndCompanyId(patientId: Long, companyId: Long): List<AppointmentEntity>
+    @Query(
+        value = """
+            SELECT a.appointment_id as appointmentId, a.patient_id as patientId, a.vet_id as vetId, 
+                   a.company_id as companyId, a.appointment_date as appointmentDate, 
+                   a.reason as reason, a.status as status, s.name as specieName, sv.service_id as serviceId,
+                   sv.name as serviceName
+            FROM appointments a
+            JOIN patients p ON a.patient_id = p.patient_id
+            JOIN species s ON p.specie_id = s.id
+            JOIN services sv ON a.service_id = sv.service_id
+            WHERE a.company_id = :#{#companyId}
+            AND (:#{#patientId} IS NULL OR :#{#patientId} = 0 OR a.patient_id = :#{#patientId})
+            AND (:#{#excludeStatus} IS NULL OR :#{#excludeStatus} = '' OR a.status != :#{#excludeStatus})
+            AND a.status != 'PAID')
+            ORDER BY a.appointment_date ASC
+        """,
+        nativeQuery = true
+    )
+    fun findAllByPatientIdAndCompanyId(patientId: Long, companyId: Long, excludeStatus: String): List<AppointmentProjection>
 
     @Query(
-        "SELECT a FROM AppointmentEntity a WHERE a.vetId = :vetId AND " +
+        "SELECT a FROM AppointmentEntity a" +
+                " WHERE a.vetId = :vetId AND " +
                 "a.appointmentDate BETWEEN :startOfDay AND :endOfDay AND " +
                 "(a.appointmentDate BETWEEN :appointmentStart AND :appointmentEnd OR " +
                 "a.appointmentDate BETWEEN :appointmentStartMinusBuffer AND :appointmentEndPlusBuffer)"

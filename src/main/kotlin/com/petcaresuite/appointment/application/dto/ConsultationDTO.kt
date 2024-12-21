@@ -1,6 +1,7 @@
 package com.petcaresuite.appointment.application.dto
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 data class ConsultationDTO(
@@ -25,4 +26,6 @@ data class ConsultationDTO(
     val ownerName: String?,
     val patientName: String?,
     val serviceId: Long? = null,
+    val serviceName: String? = null,
+    val price: BigDecimal? = null,
 )

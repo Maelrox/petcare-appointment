@@ -8,6 +8,7 @@ import com.petcaresuite.appointment.application.port.output.ConsultationPersiste
 import com.petcaresuite.appointment.application.service.messages.Responses
 import com.petcaresuite.appointment.domain.exception.ConsultInvalidException
 import com.petcaresuite.appointment.domain.model.Appointment
+import com.petcaresuite.appointment.domain.model.Consultation
 import com.petcaresuite.appointment.domain.service.AppointmentDomainService
 import com.petcaresuite.appointment.domain.service.ConsultDomainService
 import org.springframework.data.domain.Page
@@ -39,9 +40,16 @@ class ConsultationService(
     override fun update(consultationDTO: ConsultationDTO): ResponseDTO {
         val appointment = appointmentPersistencePort.findByAppointmentId(consultationDTO.appointmentId, consultationDTO.companyId!!)
         validateConsultation(consultationDTO, appointment)
-        val consultation = consultationMapper.toDomain(consultationDTO)
-        consultationPersistencePort.update(consultation)
+        val consultation = consultationPersistencePort.findByConsultationId(consultationDTO.consultationId!!, consultationDTO.companyId!!)
+        setUpdatableFields(consultation, consultationDTO)
+        val consultationUpdate = consultationMapper.toDomain(consultationDTO)
+        consultationPersistencePort.update(consultationUpdate)
         return ResponseDTO(message = Responses.CONSULTATION_UPDATED)
+    }
+
+    fun setUpdatableFields(consultation: Consultation, consultationDTO: ConsultationDTO) {
+        consultationDTO.createdAt = consultation.createdAt
+        consultationDTO.updatedAt = consultation.updatedAt
     }
 
     override fun getAllByFilterPaginated(filterDTO : ConsultationFilterDTO, pageable: Pageable, companyId: Long): Page<ConsultationDTO> {
@@ -71,7 +79,11 @@ class ConsultationService(
         if (consultationDTO.consultationDate.isBefore(LocalDateTime.now())) {
             throw ConsultInvalidException(Responses.APPOINTMENT_INVALID_DATE)
         }
-        consultDomainService.validateAppointment(appointment, consultationDTO.companyId!!)
+        if (consultationDTO.consultationId == null) {
+            consultDomainService.validateAppointment(appointment, consultationDTO.companyId!!)
+        } else {
+            consultDomainService.validateUpdateAppointment(consultationDTO.appointmentId, appointment, consultationDTO.companyId!!)
+        }
     }
 
 }

@@ -19,4 +19,8 @@ interface ConsultationProjection {
     val ownerName: String
     val patientName: String
     val appointmentDate: LocalDateTime
+    val serviceId: Long
+    val serviceName: String
+    val createdAt: LocalDateTime
+    val updatedAt: LocalDateTime
 }

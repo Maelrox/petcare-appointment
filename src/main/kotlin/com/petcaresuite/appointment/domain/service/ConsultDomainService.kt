@@ -26,6 +26,15 @@ class ConsultDomainService(
         }
     }
 
+    fun validateUpdateAppointment(currentAppointmentId: Long, appointment: Appointment, companyId: Long) {
+        if (currentAppointmentId != appointment.appointmentId && appointment.status != AppointmentStatus.SCHEDULED.name) {
+            throw ConsultInvalidException(Responses.CONSULT_INVALID_APPOINTMENT_STATUS)
+        }
+        if (appointment.companyId != companyId) {
+            throw ConsultInvalidException(Responses.CONSULT_INVALID_APPOINTMENT)
+        }
+    }
+
     fun cancelConsultation(appointment: Appointment, consultation: Consultation) {
         if (consultation.status != ConsultationStatus.ATTENDED.name) {
             throw AppointmentInvalidException(Responses.CONSULT_CANCEL_ERROR_CONSULT_NOT_ATTENDED)

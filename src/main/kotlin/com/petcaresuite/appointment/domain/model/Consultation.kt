@@ -1,5 +1,6 @@
 package com.petcaresuite.appointment.domain.model
 
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 data class Consultation(
@@ -22,7 +23,6 @@ data class Consultation(
     val ownerName: String? = null,
     val patientName: String? = null,
     val serviceId: Long? = null,
-
-) {
-
-}
+    val serviceName: String? = null,
+    val price: BigDecimal? = null,
+)
