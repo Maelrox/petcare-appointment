@@ -74,7 +74,13 @@ interface JpaAppointmentRepository : JpaRepository<AppointmentEntity, Long> {
         """,
         nativeQuery = true
     )
-    fun findAllByPatientIdAndCompanyId(patientId: Long, companyId: Long, cancelled: String, attended: String, paid: String): List<AppointmentProjection>
+    fun findAllByPatientIdAndCompanyId(
+        patientId: Long,
+        companyId: Long,
+        cancelled: String,
+        attended: String,
+        paid: String
+    ): List<AppointmentProjection>
 
     @Query(
         value = """
@@ -95,28 +101,50 @@ interface JpaAppointmentRepository : JpaRepository<AppointmentEntity, Long> {
         """,
         nativeQuery = true
     )
-    fun findAllByPatientIdAppointmentIdAndCompanyId(patientId: Long, appointmentId: Long, companyId: Long, cancelled: String, paid: String): List<AppointmentProjection>
+    fun findAllByPatientIdAppointmentIdAndCompanyId(
+        patientId: Long,
+        appointmentId: Long,
+        companyId: Long,
+        cancelled: String,
+        paid: String
+    ): List<AppointmentProjection>
+
+    @Query(
+        """
+        SELECT a FROM AppointmentEntity a
+        WHERE a.vetId = :#{#vetId}
+        AND a.status = 'SCHEDULED' 
+    """
+    )
+    fun findAllByVetIdScheduled(
+        vetId: Long
+    ): List<AppointmentEntity>
 
     @Query(
         """
             SELECT a FROM AppointmentEntity a
             WHERE a.vetId = :#{#vetId}
-            AND a.appointmentDate BETWEEN :appointmentStart AND :appointmentEnd
-        """
+            AND a.status != 'CANCELLED'
+            AND (
+                a.appointmentDate <= :appointmentStart
+                OR a.appointmentDate + :durationMinutes MINUTE > :appointmentStart
+            )
+            ORDER BY a.appointmentDate DESC
+            LIMIT 1
+         """
     )
-    fun findConflictingAppointments(
+    fun findNearbyVetAppointment(
         vetId: Long,
         appointmentStart: LocalDateTime,
-        appointmentEnd: LocalDateTime,
-    ): List<AppointmentEntity>
+        durationMinutes: Long
+    ): AppointmentEntity?
 
     @Query(
         """
-    SELECT p.owner_id FROM patients p 
-    JOIN owners o on o.owner_id = p.owner_id
-    WHERE p.patient_id = :patientId and o.company_id = :companyId
-    AND p.status != 'CANCELLED'
-    """, nativeQuery = true
+            SELECT p.owner_id FROM patients p 
+            JOIN owners o on o.owner_id = p.owner_id
+            WHERE p.patient_id = :patientId and o.company_id = :companyId
+        """, nativeQuery = true
     )
     fun findOwnerIdByPatientIdAndCompanyId(patientId: Long, companyId: Long): Long
 

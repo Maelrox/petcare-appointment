@@ -17,15 +17,7 @@ interface AppointmentPersistencePort {
 
     fun findByPatientIdAndAppointmentId(patientId: Long, appointmentId: Long, companyId: Long, excludeStatuses: List<String>): List<Appointment>
 
-    fun findConflictingAppointments(
-        vetId: Long,
-        startOfDay: LocalDateTime,
-        endOfDay: LocalDateTime,
-        appointmentStart: LocalDateTime,
-        appointmentEnd: LocalDateTime,
-        appointmentStartMinusBuffer: LocalDateTime,
-        appointmentEndPlusBuffer: LocalDateTime
-    ): List<Appointment>
+    fun findAllByVetIdScheduled(vetId: Long): List<Appointment>
 
     fun findOwnerIdByPatientIdAndCompanyId(patientId: Long, companyId: Long): Long?
 

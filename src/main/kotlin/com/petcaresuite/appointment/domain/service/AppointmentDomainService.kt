@@ -16,7 +16,7 @@ class AppointmentDomainService(
     private val consultationPersistencePort: ConsultationPersistencePort,
 ) {
 
-    val appointmentMaxMinutesDuration: Long = 29
+    val APPOINTMENT_DURATION: Long = 30
 
     fun validateDate(appointmentDate: LocalDateTime) {
         if (appointmentDate.isBefore(LocalDateTime.now())) {
@@ -25,35 +25,34 @@ class AppointmentDomainService(
     }
 
     /**
-     * Checks if there is no other appointment for the veterinarian
-     * within a 30-minute range starting from the appointmentDate.
+     * Prevents overlap the agenda of a veterinary
      */
     fun validateVeterinaryAvailability(vetId: Long, appointmentDate: LocalDateTime, appointmentId: Long?) {
-        val startOfDay = appointmentDate.toLocalDate().atStartOfDay()
-        val endOfDay = appointmentDate.toLocalDate().atTime(23, 59, 59)
-
         val appointmentStart: LocalDateTime = appointmentDate
-        val appointmentEnd: LocalDateTime = appointmentDate.plusMinutes(appointmentMaxMinutesDuration)
+        val appointmentEnd = appointmentStart.plusMinutes(APPOINTMENT_DURATION)
+        val scheduledAppointments = appointmentPersistencePort.findAllByVetIdScheduled(vetId)
 
-        val appointmentStartMinusBuffer = appointmentDate.minusMinutes(appointmentMaxMinutesDuration)
-        val appointmentEndPlusBuffer = appointmentEnd.plusMinutes(appointmentMaxMinutesDuration)
+        for (scheduledAppointment in scheduledAppointments) {
+            val scheduledAppointmentStart = scheduledAppointment.appointmentDate!!
+            val scheduledAppointmentEnd = scheduledAppointmentStart.plusMinutes(APPOINTMENT_DURATION)
 
-        val conflictingAppointments = appointmentPersistencePort.findConflictingAppointments(
-            vetId,
-            startOfDay,
-            endOfDay,
-            appointmentStart,
-            appointmentEnd,
-            appointmentStartMinusBuffer,
-            appointmentEndPlusBuffer
-        )
-        val isAppointmentInList =
-            appointmentId != null && conflictingAppointments.any { it.appointmentId == appointmentId }
+            // Check if the new appointment overlaps with the scheduled ones
+            val appointmentsOverlap =
+                scheduledAppointment.appointmentId != appointmentId &&
+                        appointmentStart < scheduledAppointmentEnd &&
+                        appointmentEnd > scheduledAppointmentStart
 
-        if (!isAppointmentInList && conflictingAppointments.isNotEmpty()) {
-            throw AppointmentConflictException(Responses.APPOINTMENT_CONFLICT)
+            // Ensure at least X minutes gap between appointments
+            val isGapSufficient =
+                appointmentStart >= scheduledAppointmentEnd ||
+                        appointmentEnd <= scheduledAppointmentStart
+
+            if (appointmentsOverlap || !isGapSufficient) {
+                throw AppointmentConflictException(Responses.APPOINTMENT_CONFLICT)
+            }
         }
     }
+
 
     fun applyInitialDate(filter: Appointment) {
         filter.initialDate =
