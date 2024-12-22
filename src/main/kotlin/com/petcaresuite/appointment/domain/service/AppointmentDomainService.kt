@@ -91,15 +91,32 @@ class AppointmentDomainService(
     }
 
     fun cancelAppointment(appointment: Appointment) {
+        if (appointment.status == AppointmentStatus.CANCELLED.name) {
+            throw AppointmentInvalidException(Responses.APPOINTMENT_ALREADY_CANCELLED)
+        }
+        if (appointment.status == AppointmentStatus.PAID.name) {
+            throw AppointmentInvalidException(Responses.APPOINTMENT_ALREADY_PAID)
+        }
+        if (appointment.status == AppointmentStatus.ATTENDED.name) {
+            throw AppointmentInvalidException(Responses.APPOINTMENT_ALREADY_ATTENDED)
+        }
         if (appointment.status != AppointmentStatus.SCHEDULED.name) {
             throw AppointmentInvalidException(Responses.APPOINTMENT_NOT_SCHEDULED)
         }
-        if (consultationPersistencePort.existByConsultationId(appointment.appointmentId ?: throw IllegalArgumentException("Appointment ID cannot be null"))) {
+        if (consultationPersistencePort.existByConsultationId(appointment.appointmentId ?: throw IllegalArgumentException(Responses.APPOINTMENT_ID_REQUIRED))) {
             throw AppointmentInvalidException(Responses.APPOINTMENT_HAS_CONSULT)
         }
 
         appointment.status = AppointmentStatus.CANCELLED.name
         appointmentPersistencePort.save(appointment)
+    }
+
+    fun excludeStatus(appointmentId: Long?, excludeStatuses: MutableList<String>) {
+        excludeStatuses.add(AppointmentStatus.CANCELLED.name)
+        if (appointmentId == null) {
+            excludeStatuses.add(AppointmentStatus.ATTENDED.name)
+            excludeStatuses.add(AppointmentStatus.PAID.name)
+        }
     }
 
 }

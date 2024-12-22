@@ -19,28 +19,34 @@ class ConsultDomainService(
 
     fun validateAppointment(appointment: Appointment, companyId: Long) {
         if (appointment.status != AppointmentStatus.SCHEDULED.name) {
-            throw ConsultInvalidException(Responses.CONSULT_INVALID_APPOINTMENT_STATUS)
+            throw ConsultInvalidException(Responses.CONSULTATION_INVALID_STATUS)
         }
         if (appointment.companyId != companyId) {
-            throw ConsultInvalidException(Responses.CONSULT_INVALID_APPOINTMENT)
+            throw ConsultInvalidException(Responses.CONSULTATION_INVALID_APPOINTMENT)
         }
     }
 
     fun validateUpdateAppointment(currentAppointmentId: Long, appointment: Appointment, companyId: Long) {
         if (currentAppointmentId != appointment.appointmentId && appointment.status != AppointmentStatus.SCHEDULED.name) {
-            throw ConsultInvalidException(Responses.CONSULT_INVALID_APPOINTMENT_STATUS)
+            throw ConsultInvalidException(Responses.CONSULTATION_INVALID_STATUS)
         }
         if (appointment.companyId != companyId) {
-            throw ConsultInvalidException(Responses.CONSULT_INVALID_APPOINTMENT)
+            throw ConsultInvalidException(Responses.CONSULTATION_INVALID_APPOINTMENT)
         }
     }
 
     fun cancelConsultation(appointment: Appointment, consultation: Consultation) {
+        if (consultation.status == ConsultationStatus.CANCELLED.name) {
+            throw AppointmentInvalidException(Responses.CONSULTATION_ALREADY_PAID)
+        }
+        if (consultation.status == ConsultationStatus.PAID.name) {
+            throw AppointmentInvalidException(Responses.CONSULTATION_ALREADY_PAID)
+        }
         if (consultation.status != ConsultationStatus.ATTENDED.name) {
-            throw AppointmentInvalidException(Responses.CONSULT_CANCEL_ERROR_CONSULT_NOT_ATTENDED)
+            throw AppointmentInvalidException(Responses.CONSULTATION_NOT_ATTENDED)
         }
         if (appointment.status != AppointmentStatus.ATTENDED.name) {
-            throw AppointmentInvalidException(Responses.CONSULT_CANCEL_ERROR_APPOINTMENT_NOT_ATTENDED)
+            throw AppointmentInvalidException(Responses.APPOINTMENT_NOT_ATTENDED)
         }
         appointment.status = AppointmentStatus.CANCELLED.name
         consultation.status = ConsultationStatus.CANCELLED.name

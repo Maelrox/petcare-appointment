@@ -67,13 +67,35 @@ interface JpaAppointmentRepository : JpaRepository<AppointmentEntity, Long> {
             JOIN services sv ON a.service_id = sv.service_id
             WHERE a.company_id = :#{#companyId}
             AND (:#{#patientId} IS NULL OR :#{#patientId} = 0 OR a.patient_id = :#{#patientId})
-            AND (:#{#excludeStatus} IS NULL OR :#{#excludeStatus} = '' OR a.status != :#{#excludeStatus})
-            AND a.status != 'PAID')
+            AND a.status != :#{#cancelled}
+            AND a.status != :#{#attended}
+            AND a.status != :#{#paid}
             ORDER BY a.appointment_date ASC
         """,
         nativeQuery = true
     )
-    fun findAllByPatientIdAndCompanyId(patientId: Long, companyId: Long, excludeStatus: String): List<AppointmentProjection>
+    fun findAllByPatientIdAndCompanyId(patientId: Long, companyId: Long, cancelled: String, attended: String, paid: String): List<AppointmentProjection>
+
+    @Query(
+        value = """
+            SELECT a.appointment_id as appointmentId, a.patient_id as patientId, a.vet_id as vetId, 
+                   a.company_id as companyId, a.appointment_date as appointmentDate, 
+                   a.reason as reason, a.status as status, s.name as specieName, sv.service_id as serviceId,
+                   sv.name as serviceName
+            FROM appointments a
+            JOIN patients p ON a.patient_id = p.patient_id
+            JOIN species s ON p.specie_id = s.id
+            JOIN services sv ON a.service_id = sv.service_id
+            WHERE a.company_id = :#{#companyId}
+            AND a.appointment_id = :#{#appointmentId}
+            AND a.patient_id = :#{#patientId}
+            AND a.status != :#{#cancelled}
+            AND a.status != :#{#paid}
+            ORDER BY a.appointment_date ASC
+        """,
+        nativeQuery = true
+    )
+    fun findAllByPatientIdAppointmentIdAndCompanyId(patientId: Long, appointmentId: Long, companyId: Long, cancelled: String, paid: String): List<AppointmentProjection>
 
     @Query(
         "SELECT a FROM AppointmentEntity a" +

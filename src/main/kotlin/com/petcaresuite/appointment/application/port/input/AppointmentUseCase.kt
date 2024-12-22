@@ -12,7 +12,7 @@ interface AppointmentUseCase {
 
     fun getByAppointmentId(appointmentId: Long, companyId: Long): AppointmentDTO
 
-    fun getByPatientId(patientId: Long, companyId: Long): List<AppointmentDTO>
+    fun getByPatientId(patientId: Long, companyId: Long, appointmentId: Long?): List<AppointmentDTO>
 
     fun cancel(appointmentId: Long, companyId: Long): ResponseDTO?
 

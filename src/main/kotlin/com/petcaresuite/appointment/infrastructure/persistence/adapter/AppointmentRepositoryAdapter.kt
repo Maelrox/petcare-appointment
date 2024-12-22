@@ -44,8 +44,26 @@ class AppointmentRepositoryAdapter(
         return appointment
     }
 
-    override fun findByPatientId(patientId: Long, companyId: Long, excludeStatus: String): List<Appointment> {
-        val appointmentEntity = jpaAppointmentRepository.findAllByPatientIdAndCompanyId(patientId, companyId, excludeStatus)
+    override fun findByPatientId(patientId: Long, companyId: Long, excludeStatuses: List<String>): List<Appointment> {
+        val cancelled = excludeStatuses[0]
+        val attended = excludeStatuses.getOrNull(1) ?: ""
+        val paid = excludeStatuses.getOrNull(2) ?: ""
+
+        val appointmentEntity = jpaAppointmentRepository.findAllByPatientIdAndCompanyId(patientId, companyId, cancelled, attended, paid)
+        val appointment = appointmentMapper.projectionToDomain(appointmentEntity)
+        return appointment
+    }
+
+    override fun findByPatientIdAndAppointmentId(
+        patientId: Long,
+        appointmentId: Long,
+        companyId: Long,
+        excludeStatuses: List<String>
+    ): List<Appointment> {
+        val cancelled = excludeStatuses[0]
+        val paid = excludeStatuses.getOrNull(1) ?: ""
+
+        val appointmentEntity = jpaAppointmentRepository.findAllByPatientIdAppointmentIdAndCompanyId(patientId, appointmentId, companyId, cancelled, paid)
         val appointment = appointmentMapper.projectionToDomain(appointmentEntity)
         return appointment
     }

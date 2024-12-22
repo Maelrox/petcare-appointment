@@ -47,8 +47,14 @@ class AppointmentService(
         return appointmentMapper.toDTO(appointment)
     }
 
-    override fun getByPatientId(patientId: Long, companyId: Long): List<AppointmentDTO> {
-        val appointments = appointmentPersistencePort.findByPatientId(patientId, companyId, AppointmentStatus.CANCELLED.name)
+    override fun getByPatientId(patientId: Long, companyId: Long, appointmentId: Long?): List<AppointmentDTO> {
+        val excludeStatuses = mutableListOf<String>()
+        appointmentDomainService.excludeStatus(appointmentId, excludeStatuses)
+        val appointments = if (appointmentId != null) {
+            appointmentPersistencePort.findByPatientIdAndAppointmentId(patientId, appointmentId, companyId, excludeStatuses.toList())
+        } else {
+            appointmentPersistencePort.findByPatientId(patientId, companyId, excludeStatuses.toList())
+        }
         return appointmentMapper.toDTO(appointments)
     }
 

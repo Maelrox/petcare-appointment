@@ -56,7 +56,7 @@ interface JpaConsultationRepository : JpaRepository<ConsultationEntity, Long> {
             JOIN appointments a ON a.appointment_id = c.appointment_id
             WHERE c.company_id = :#{#companyId}
             AND c.consultation_id =  :#{#consultationId}
-            AND c.status = 'ATTENDED'
+            AND (c.status = 'ATTENDED' or c.status = 'PAID')
         """,
         nativeQuery = true
     )

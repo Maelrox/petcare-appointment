@@ -49,11 +49,18 @@ class AppointmentController(private val appointmentUseCase: AppointmentUseCase) 
         return ResponseEntity.ok(appointmentUseCase.getAllByFilter(filterDTO, companyId))
     }
 
-    @GetMapping("/patient/{patientId}")
+    @GetMapping("{appointmentId}/patient/{patientId}")
     @Permissions(Modules.APPOINTMENTS, ModuleActions.VIEW)
-    fun getAppointmentByPatient(@PathVariable patientId: Long, request: HttpServletRequest): ResponseEntity<List<AppointmentDTO>> {
+    fun getAppointmentByPatient(@PathVariable appointmentId: Long, @PathVariable patientId: Long, request: HttpServletRequest): ResponseEntity<List<AppointmentDTO>> {
         val companyId  = request.getAttribute("companyId").toString().toLong()
-        return ResponseEntity.ok(appointmentUseCase.getByPatientId(patientId, companyId))
+        return ResponseEntity.ok(appointmentUseCase.getByPatientId(patientId, companyId, appointmentId))
+    }
+
+    @GetMapping("/patient/scheduled/{patientId}")
+    @Permissions(Modules.APPOINTMENTS, ModuleActions.VIEW)
+    fun getScheduledAppointmentByPatient(@PathVariable patientId: Long, request: HttpServletRequest): ResponseEntity<List<AppointmentDTO>> {
+        val companyId  = request.getAttribute("companyId").toString().toLong()
+        return ResponseEntity.ok(appointmentUseCase.getByPatientId(patientId, companyId, null))
     }
 
 }

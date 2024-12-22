@@ -72,7 +72,7 @@ class ConsultationService(
         val consultation = consultationPersistencePort.findByConsultationId(consultationId, companyId)
         val appointment = appointmentPersistencePort.findByAppointmentId(consultation.appointmentId!!, companyId)
         consultDomainService.cancelConsultation(appointment, consultation)
-        return ResponseDTO(message = Responses.CONSULT_CANCELLED)
+        return ResponseDTO(message = Responses.CONSULTATION_CANCELLED)
     }
 
     private fun validateConsultation(consultationDTO: ConsultationDTO, appointment: Appointment) {
