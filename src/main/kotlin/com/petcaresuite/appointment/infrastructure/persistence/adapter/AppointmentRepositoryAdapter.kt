@@ -79,12 +79,8 @@ class AppointmentRepositoryAdapter(
     ): List<Appointment> {
         val conflictingAppointments = jpaAppointmentRepository.findConflictingAppointments(
             vetId,
-            startOfDay,
-            endOfDay,
             appointmentStart,
-            appointmentEnd,
-            appointmentStartMinusBuffer,
-            appointmentEndPlusBuffer
+            appointmentEnd
         )
         return appointmentMapper.dtoListToDomain(conflictingAppointments)
     }

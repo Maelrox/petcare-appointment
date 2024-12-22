@@ -98,20 +98,16 @@ interface JpaAppointmentRepository : JpaRepository<AppointmentEntity, Long> {
     fun findAllByPatientIdAppointmentIdAndCompanyId(patientId: Long, appointmentId: Long, companyId: Long, cancelled: String, paid: String): List<AppointmentProjection>
 
     @Query(
-        "SELECT a FROM AppointmentEntity a" +
-                " WHERE a.vetId = :vetId AND " +
-                "a.appointmentDate BETWEEN :startOfDay AND :endOfDay AND " +
-                "(a.appointmentDate BETWEEN :appointmentStart AND :appointmentEnd OR " +
-                "a.appointmentDate BETWEEN :appointmentStartMinusBuffer AND :appointmentEndPlusBuffer)"
+        """
+            SELECT a FROM AppointmentEntity a
+            WHERE a.vetId = :#{#vetId}
+            AND a.appointmentDate BETWEEN :appointmentStart AND :appointmentEnd
+        """
     )
     fun findConflictingAppointments(
         vetId: Long,
-        startOfDay: LocalDateTime,
-        endOfDay: LocalDateTime,
         appointmentStart: LocalDateTime,
         appointmentEnd: LocalDateTime,
-        appointmentStartMinusBuffer: LocalDateTime,
-        appointmentEndPlusBuffer: LocalDateTime
     ): List<AppointmentEntity>
 
     @Query(
@@ -119,6 +115,7 @@ interface JpaAppointmentRepository : JpaRepository<AppointmentEntity, Long> {
     SELECT p.owner_id FROM patients p 
     JOIN owners o on o.owner_id = p.owner_id
     WHERE p.patient_id = :patientId and o.company_id = :companyId
+    AND p.status != 'CANCELLED'
     """, nativeQuery = true
     )
     fun findOwnerIdByPatientIdAndCompanyId(patientId: Long, companyId: Long): Long
