@@ -2,6 +2,14 @@ FROM bellsoft/liberica-openjdk-alpine:21
 
 WORKDIR /app
 
-COPY build/libs/appointment-0.1.jar appointment.jar
+RUN apk update && apk add --no-cache curl
 
-ENTRYPOINT ["java", "-jar", "appointment.jar"]
+COPY build/libs/appointment-0.1.jar appointment.jar
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+
+# Docker secrets mounted are set as environment variables from the shell
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+CMD ["java", "-jar", "/app/appointment.jar"]

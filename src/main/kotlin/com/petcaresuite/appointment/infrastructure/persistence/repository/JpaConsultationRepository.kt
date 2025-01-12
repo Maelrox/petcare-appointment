@@ -76,4 +76,5 @@ interface JpaConsultationRepository : JpaRepository<ConsultationEntity, Long> {
         nativeQuery = true
     )
     fun findAllAttendedByOwnerAndCompanyId(ownerId: Long, companyId: Long): List<ConsultationBillingProjection>
+
 }
